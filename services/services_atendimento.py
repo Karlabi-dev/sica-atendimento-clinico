@@ -55,10 +55,10 @@ def criar_atendimento(dados):
 
     salvar_atendimento(atendimento, caminho_arquivo)
 
-def listar_pacientes():
+def listar_atendimento():
     return carregar_dados_atendimentos(caminho_arquivo)
     
-def deletar_paciente(id_paciente):
+def deletar_atendimento(id_paciente):
     dados = carregar_dados_atendimentos(caminho_arquivo)
 
     novos_dados = [p for p in dados if p["id"] != id_paciente]

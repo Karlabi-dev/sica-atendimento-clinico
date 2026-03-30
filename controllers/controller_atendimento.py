@@ -1,6 +1,6 @@
 from services.services_atendimento import (
     criar_atendimento,
-    listar_atendimentos,
+    listar_atendimento,
     deletar_atendimento
 )
 
@@ -22,7 +22,7 @@ class AtendimentoController:
     @staticmethod
     def listar():
         try:
-            atendimentos = listar_atendimentos()
+            atendimentos = listar_atendimento()
             return Response(True, dados=atendimentos)
 
         except Exception as e:
