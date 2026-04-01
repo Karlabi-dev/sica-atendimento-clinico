@@ -18,24 +18,24 @@ class CadastroPacienteFrame(ctk.CTkFrame):
         self.frame_card.grid_columnconfigure(0, weight=1)
         self.frame_card.grid_columnconfigure(1, weight=1)
         
-        ctk.CTkLabel(self.frame_card, text="Nome Completo *",font=("Arial", 13, "bold")).grid(row=0, column=0, padx=10, pady=5, sticky="w")
-        self.entry_nome = ctk.CTkEntry(self.frame_card, placeholder_text="Ex.: Maria dos santos",fg_color="#E8E8E8")
+        ctk.CTkLabel(self.frame_card, text="Nome Completo *").grid(row=0, column=0, padx=10, pady=5, sticky="w")
+        self.entry_nome = ctk.CTkEntry(self.frame_card, placeholder_text="Ex.: Maria dos santos")
         self.entry_nome.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
 
-        ctk.CTkLabel(self.frame_card, text="Data Nascimento *",font=("Arial", 13, "bold")).grid(row=3, column=0, padx=10, pady=5, sticky="w")
-        self.entry_data = ctk.CTkEntry(self.frame_card, placeholder_text="YYYY-MM-DD",fg_color="#E8E8E8")
+        ctk.CTkLabel(self.frame_card, text="Data Nascimento *").grid(row=3, column=0, padx=10, pady=5, sticky="w")
+        self.entry_data = ctk.CTkEntry(self.frame_card, placeholder_text="DD-MM-YYYY")
         self.entry_data.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
 
-        ctk.CTkLabel(self.frame_card, text="Telefone *",font=("Arial", 13, "bold")).grid(row=3, column=1, padx=10, pady=5, sticky="w")
-        self.entry_telefone = ctk.CTkEntry(self.frame_card, placeholder_text="(00)000000000",fg_color="#E8E8E8")
+        ctk.CTkLabel(self.frame_card, text="Telefone *").grid(row=3, column=1, padx=10, pady=5, sticky="w")
+        self.entry_telefone = ctk.CTkEntry(self.frame_card, placeholder_text="(00)000000000")
         self.entry_telefone.grid(row=4, column=1, padx=10, pady=5, sticky="ew")
 
-        ctk.CTkLabel(self.frame_card, text="Email *",font=("Arial", 13, "bold")).grid(row=5, column=0, padx=10, pady=5, sticky="w")
-        self.entry_email = ctk.CTkEntry(self.frame_card, placeholder_text="Ex.: Mariaa@gmail.com",fg_color="#E8E8E8")
+        ctk.CTkLabel(self.frame_card, text="Email *").grid(row=5, column=0, padx=10, pady=5, sticky="w")
+        self.entry_email = ctk.CTkEntry(self.frame_card, placeholder_text="Ex.: Mariaa@gmail.com")
         self.entry_email.grid(row=6, column=0, padx=10, pady=10, sticky="ew")
 
-        ctk.CTkLabel(self.frame_card, text="CPF *",font=("Arial", 13, "bold")).grid(row=5, column=1, padx=10, pady=5, sticky="w")
-        self.entry_cpf = ctk.CTkEntry(self.frame_card, placeholder_text="000.000.000-00",fg_color="#E8E8E8")
+        ctk.CTkLabel(self.frame_card, text="CPF *").grid(row=5, column=1, padx=10, pady=5, sticky="w")
+        self.entry_cpf = ctk.CTkEntry(self.frame_card, placeholder_text="000.000.000-00")
         self.entry_cpf.grid(row=6, column=1, padx=10, pady=10, sticky="ew")
     
         self.btn_salvar = ctk.CTkButton(self,text="Salvar",fg_color="#1B9262",command=self.salvar_paciente)

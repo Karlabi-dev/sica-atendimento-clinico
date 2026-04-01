@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from interfaces.tela_cadastro_pacientes import CadastroPacienteFrame
+from interfaces.tela_cadastro_atendimento import CadastroAtendimentoFrame
 from services.services_parciente import contar_pacientes
 from services.services_atendimento import contar_atendimentos, contar_atendimentos_hoje
 
@@ -25,7 +26,6 @@ class TelaInicial(ctk.CTk):
         self.geometry('900x600')
         self.title("SICA - Sistema Inteligente de Clínica e Atendimento")
 
-        # MENU LATERAL
         self.menu_lateral = ctk.CTkFrame(
             self,
             width=200,
@@ -61,7 +61,7 @@ class TelaInicial(ctk.CTk):
         botao_menu(self.menu_lateral, "Pacientes").pack(padx=5, fill='x')
         botao_menu(self.menu_lateral, "Atendimentos").pack(padx=5, fill='x')
         botao_menu(self.menu_lateral, "Novo Paciente", self.abrir_tela_cadastro_paciente).pack(padx=5, fill='x')
-        botao_menu(self.menu_lateral, "Novo Atendimento").pack(padx=5, fill='x')
+        botao_menu(self.menu_lateral, "Novo Atendimento", self.abrir_tela_cadastro_atendimento).pack(padx=5, fill='x')
 
         self.frame_scrollbar = ctk.CTkScrollableFrame(self, fg_color="#CBCBCB")
         self.frame_scrollbar.pack(fill='both', expand=True)
@@ -106,4 +106,10 @@ class TelaInicial(ctk.CTk):
         self.limpar_tela()
 
         self.cadastro_frame = CadastroPacienteFrame(self.frame_scrollbar)
+        self.cadastro_frame.pack(padx=10, pady=10, fill='both', expand=True)
+        
+    def abrir_tela_cadastro_atendimento(self):
+        self.limpar_tela()
+
+        self.cadastro_frame = CadastroAtendimentoFrame(self.frame_scrollbar)
         self.cadastro_frame.pack(padx=10, pady=10, fill='both', expand=True)

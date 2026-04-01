@@ -77,11 +77,13 @@ def atualizar_paciente(id_paciente, novos_dados):
 
     raise Exception("Paciente não encontrado") 
 
-def buscar_paciente_por_id(id_paciente):
-    dados = carregar_dados()
-
-    for paciente in dados:
-        if paciente["id"] == id_paciente:
-            return paciente
-
+def buscar_paciente_por_id(paciente_id):
+    pacientes = carregar_dados()
+    for p in pacientes:
+        if str(p["id"]) == str(paciente_id):
+            return p
     return None
+
+
+
+

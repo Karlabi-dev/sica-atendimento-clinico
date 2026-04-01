@@ -1,5 +1,4 @@
 class AtendimentoErro(Exception):
-    """Erro base de atendimento"""
     pass
 
 
@@ -10,8 +9,7 @@ class CampoObrigatorioAtendimentoErro(AtendimentoErro):
 
 class DataAtendimentoInvalidaErro(AtendimentoErro):
     def __init__(self):
-        super().__init__("Data do atendimento inválida (use YYYY-MM-DD)")
-
+        super().__init__("Data ou hora inválida")
 
 class DataAtendimentoFuturaErro(AtendimentoErro):
     def __init__(self):

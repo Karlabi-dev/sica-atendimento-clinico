@@ -1,69 +1,61 @@
-from datetime import date
 import json
-from models.atendimento import Atendimento
-from validacoes.validar_atendimento import ValidadorAtendimento
+import os
+from datetime import datetime
 
-caminho_arquivo = "data/atendimento.json"
+ARQUIVO = "data/atendimentos.json"
+
+
+def contar_atendimentos():
+    atendimentos = carregar_atendimento()
+    return len(atendimentos)
+
 
 def contar_atendimentos_hoje():
-    dados = carregar_dados_atendimentos("data/atendimento.json")
-    
-    hoje = date.today().isoformat()
+    atendimentos = carregar_atendimento()
 
-    return len([a for a in dados if a["data"] == hoje])
+    hoje = datetime.now().strftime("%d/%m/%Y")
 
-def carregar_dados_atendimentos(caminho_arquivo):
-    try:
-        with open(caminho_arquivo, "r") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
+    return sum(1 for a in atendimentos if a["data"] == hoje)
+def carregar_atendimento():
+    if not os.path.exists(ARQUIVO):
         return []
-    
-def contar_atendimentos():
-    dados = carregar_dados_atendimentos("data/atendimento.json")
-    return len(dados)
 
-def gerar_id(caminho_arquivo):
-    dados = carregar_dados_atendimentos(caminho_arquivo)
+    with open(ARQUIVO, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-    if not dados:
+def salvar_todos(atendimentos):
+    with open(ARQUIVO, "w", encoding="utf-8") as f:
+        json.dump(atendimentos, f, indent=4, ensure_ascii=False)
+
+def gerar_id(atendimentos):
+    if not atendimentos:
         return 1
 
-    return max(p["id"] for p in dados) + 1
+    return max(a["id"] for a in atendimentos) + 1
 
-def salvar_atendimento(atendimento, caminho_arquivo):
-    dados = carregar_dados_atendimentos(caminho_arquivo)
-
-    dados.append(atendimento.to_dict())
-
-    with open(caminho_arquivo, "w") as f:
-        json.dump(dados, f, indent=4)
 
 def criar_atendimento(dados):
-    ValidadorAtendimento.validar_atendimento(dados)
-    
-    novo_id = gerar_id(caminho_arquivo)
+    atendimentos = carregar_atendimento()
 
-    atendimento = Atendimento(
-        id=novo_id,
-        paciente_id=dados["paciente_id"],
-        data=dados["data"],
-        tipo=dados["tipo"],
-        observacoes=dados["observacoes"],
-        status=dados["status"]
-    )
+    novo = {
+        "id": gerar_id(atendimentos),
+        "paciente_id": dados["paciente_id"],
+        "data": dados["data"],
+        "hora": dados["hora"],
+        "tipo": dados["tipo"],
+        "status": dados["status"],
+        "observacoes": dados.get("observacoes", "")
+    }
 
-    salvar_atendimento(atendimento, caminho_arquivo)
+    atendimentos.append(novo)
+    salvar_todos(atendimentos)
 
 def listar_atendimento():
-    return carregar_dados_atendimentos(caminho_arquivo)
-    
-def deletar_atendimento(id_paciente):
-    dados = carregar_dados_atendimentos(caminho_arquivo)
+    return carregar_atendimento()
 
-    novos_dados = [p for p in dados if p["id"] != id_paciente]
+def deletar_atendimento(id_atendimento):
+    atendimentos = carregar_atendimento()
 
-    if len(dados) == len(novos_dados):
-        raise Exception("Atendimento não encontrado")
+    novos = [a for a in atendimentos if a["id"] != id_atendimento]
 
-    salvar_atendimento(novos_dados,caminho_arquivo)
+    salvar_todos(novos)
