@@ -1,4 +1,7 @@
 import customtkinter as ctk
+from tkinter import messagebox as mg
+import datetime as dt
+import locale
 
 from interfaces.tela_cadastro_pacientes import CadastroPacienteFrame
 from interfaces.tela_cadastro_atendimento import CadastroAtendimentoFrame
@@ -29,6 +32,7 @@ class TelaInicial(ctk.CTk):
         super().__init__()
         self.geometry('900x600')
         self.title("SICA - Sistema Inteligente de Clínica e Atendimento")
+        self.attributes("-fullscreen", True)
 
         self.menu_lateral = ctk.CTkFrame(
             self,
@@ -37,6 +41,7 @@ class TelaInicial(ctk.CTk):
             fg_color='#1B263B'
         )
         self.menu_lateral.pack(side="left", fill='y')
+
         
         def botao_menu(master, texto, comando=None):
             return ctk.CTkButton(
@@ -66,6 +71,7 @@ class TelaInicial(ctk.CTk):
         botao_menu(self.menu_lateral, "Atendimentos",self.abrir_tela_atendimentos).pack(padx=5, fill='x')
         botao_menu(self.menu_lateral, "Novo Paciente", self.abrir_tela_cadastro_paciente).pack(padx=5, fill='x')
         botao_menu(self.menu_lateral, "Novo Atendimento", self.abrir_tela_cadastro_atendimento).pack(padx=5, fill='x')
+        botao_menu(self.menu_lateral, "Sair", self.sair).pack(padx=5, fill='x')
 
         self.frame_scrollbar = ctk.CTkScrollableFrame(self, fg_color="#CBCBCB")
         self.frame_scrollbar.pack(fill='both', expand=True)
@@ -75,9 +81,19 @@ class TelaInicial(ctk.CTk):
     def limpar_tela(self):
         for widget in self.frame_scrollbar.winfo_children():
             widget.destroy()
+    
+    def sair(self):
+        confirmar = mg.askyesno(
+            "Sair", "Tem certeza que deseja Sair?"
+        )
+        if confirmar:
+            self.destroy()
             
     def abrir_dashboard(self):
         self.limpar_tela()
+
+        label_data = ctk.CTkLabel(self.frame_scrollbar, text=self.data(), font=("Arial", 16))
+        label_data.pack(pady=(20,10), anchor='w')
 
         self.card = FrameCard(self.frame_scrollbar, "Dashboard")
         self.card.pack(padx=10, pady=10, fill='both', expand=True)
@@ -105,7 +121,15 @@ class TelaInicial(ctk.CTk):
         total_atendimento_hoje = contar_atendimentos_hoje()
         ctk.CTkLabel(frame_hoje, text="Atendimentos Hoje").pack(pady=(10, 0))
         ctk.CTkLabel(frame_hoje, text=str(total_atendimento_hoje), font=("Arial", 20)).pack(pady=10)
-        
+
+    def data(self):
+        locale.setlocale(locale.LC_TIME, "pt-BR")
+        mes = dt.date.today().strftime("%B")
+        ano = dt.date.today().strftime("%Y")
+        dia_num = dt.date.today().strftime("%d")
+        dia_nome = dt.date.today().strftime("%A")
+        return f"{dia_nome.capitalize()}, {dia_num} de {mes.capitalize()}-{ano}"
+
     def trocar_tela(self, TelaClasse, **kwargs):
         for widget in self.frame_scrollbar.winfo_children():
             widget.destroy()
