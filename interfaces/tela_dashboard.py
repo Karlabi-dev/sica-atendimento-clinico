@@ -1,6 +1,10 @@
 import customtkinter as ctk
+
 from interfaces.tela_cadastro_pacientes import CadastroPacienteFrame
 from interfaces.tela_cadastro_atendimento import CadastroAtendimentoFrame
+from interfaces.tela_atendimentos import AtendimentoFrame
+from interfaces.tela_pacientes import PacienteFrame
+
 from services.services_parciente import contar_pacientes
 from services.services_atendimento import contar_atendimentos, contar_atendimentos_hoje
 
@@ -16,7 +20,7 @@ class FrameCard(ctk.CTkFrame):
         self.titulo = ctk.CTkLabel(
             self,
             text=titulo,
-            font=("Arial", 16, "bold")
+            font=("Arial", 20, "bold")
         )
         self.titulo.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
@@ -58,8 +62,8 @@ class TelaInicial(ctk.CTk):
         linha.pack(fill="x", padx=5, pady=(0, 10))
 
         botao_menu(self.menu_lateral, "Dashboard", self.abrir_dashboard).pack(padx=5, fill='x')
-        botao_menu(self.menu_lateral, "Pacientes").pack(padx=5, fill='x')
-        botao_menu(self.menu_lateral, "Atendimentos").pack(padx=5, fill='x')
+        botao_menu(self.menu_lateral, "Pacientes", self.abrir_tela_pacientes).pack(padx=5, fill='x')
+        botao_menu(self.menu_lateral, "Atendimentos",self.abrir_tela_atendimentos).pack(padx=5, fill='x')
         botao_menu(self.menu_lateral, "Novo Paciente", self.abrir_tela_cadastro_paciente).pack(padx=5, fill='x')
         botao_menu(self.menu_lateral, "Novo Atendimento", self.abrir_tela_cadastro_atendimento).pack(padx=5, fill='x')
 
@@ -67,11 +71,11 @@ class TelaInicial(ctk.CTk):
         self.frame_scrollbar.pack(fill='both', expand=True)
 
         self.abrir_dashboard()
-
+        
     def limpar_tela(self):
         for widget in self.frame_scrollbar.winfo_children():
             widget.destroy()
-
+            
     def abrir_dashboard(self):
         self.limpar_tela()
 
@@ -102,14 +106,21 @@ class TelaInicial(ctk.CTk):
         ctk.CTkLabel(frame_hoje, text="Atendimentos Hoje").pack(pady=(10, 0))
         ctk.CTkLabel(frame_hoje, text=str(total_atendimento_hoje), font=("Arial", 20)).pack(pady=10)
         
+    def trocar_tela(self, TelaClasse, **kwargs):
+        for widget in self.frame_scrollbar.winfo_children():
+            widget.destroy()
+        self.tela_atual = TelaClasse(self.frame_scrollbar, self, **kwargs)
+        self.tela_atual.pack(fill='both', expand=True)
+    
+        
     def abrir_tela_cadastro_paciente(self):
-        self.limpar_tela()
-
-        self.cadastro_frame = CadastroPacienteFrame(self.frame_scrollbar)
-        self.cadastro_frame.pack(padx=10, pady=10, fill='both', expand=True)
+        self.trocar_tela(CadastroPacienteFrame)
         
     def abrir_tela_cadastro_atendimento(self):
-        self.limpar_tela()
-
-        self.cadastro_frame = CadastroAtendimentoFrame(self.frame_scrollbar)
-        self.cadastro_frame.pack(padx=10, pady=10, fill='both', expand=True)
+        self.trocar_tela(CadastroAtendimentoFrame)
+        
+    def abrir_tela_atendimentos(self):
+        self.trocar_tela(AtendimentoFrame)
+        
+    def abrir_tela_pacientes(self):
+        self.trocar_tela(PacienteFrame)

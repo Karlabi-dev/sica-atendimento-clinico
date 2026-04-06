@@ -1,42 +1,18 @@
 [
     {
         "id": 1,
-        "nome": "Maria Souza",
-        "data_nascimento": "1990-05-10",
-        "telefone": "88999999999",
-        "email": "maria@email,com",
-        "cpf": "09876543223"
-    },
-    {
-        "id": 2,
-        "nome": "karla bianca",
-        "data_nascimento": "2005-10-09",
-        "telefone": "85992455842",
-        "email": "karla12@gmail.com",
-        "cpf": "09876543223"
+        "nome": "karla Bianca",
+        "data_nascimento": "19/03/2005",
+        "telefone": "987876756745",
+        "email": "karla34@gmail.com",
+        "cpf": "09876543212"
     },
     {
         "id": 3,
-        "nome": "karla",
-        "data_nascimento": "2005-03-09",
-        "telefone": "938474",
-        "email": "karla@gmail.com",
+        "nome": "maria",
+        "data_nascimento": "18/09/2005",
+        "telefone": "85998765432",
+        "email": "maria@gmail.com",
         "cpf": "09876543223"
-    },
-    {
-        "id": 4,
-        "nome": "Karla Bianca",
-        "data_nascimento": "2005-03-19",
-        "telefone": "859876543",
-        "email": "Karla@gmail.com",
-        "cpf": "09592530335"
-    },
-    {
-        "id": 5,
-        "nome": "karla",
-        "data_nascimento": "2004-02-29",
-        "telefone": "938772222",
-        "email": "Karla@gmail.com",
-        "cpf": "09573622378"
     }
 ]

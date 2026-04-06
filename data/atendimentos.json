@@ -1,12 +1,12 @@
 [
     {
         "id": 1,
-        "paciente_id": "1",
-        "data": "31/03/2026",
-        "hora": "23:20",
+        "paciente_id": 1,
+        "data": "",
+        "hora": "",
         "tipo": "Consulta médica",
         "status": "Agendada",
-        "observacoes": "xx"
+        "observacoes": ""
     },
     {
         "id": 2,
@@ -36,48 +36,21 @@
         "observacoes": "ss"
     },
     {
-        "id": 5,
-        "paciente_id": "1",
-        "data": "01/04/2026",
-        "hora": "00:07",
-        "tipo": "Consulta médica",
-        "status": "Agendada",
-        "observacoes": ""
-    },
-    {
         "id": 6,
-        "paciente_id": "2",
-        "data": "01/04/2026",
-        "hora": "00:07",
-        "tipo": "Urgência",
-        "status": "Concluida",
+        "paciente_id": 2,
+        "data": "05/04/2026",
+        "hora": "14:17",
+        "tipo": "Consulta médica",
+        "status": "Em andamento",
         "observacoes": ""
     },
     {
         "id": 7,
-        "paciente_id": "1",
-        "data": "01/04/2026",
-        "hora": "00:13",
+        "paciente_id": 1,
+        "data": "05/04/2026",
+        "hora": "14:04",
         "tipo": "Consulta médica",
-        "status": "Agendada",
-        "observacoes": ""
-    },
-    {
-        "id": 8,
-        "paciente_id": "1",
-        "data": "01/04/2026",
-        "hora": "00:13",
-        "tipo": "Consulta médica",
-        "status": "Agendada",
-        "observacoes": ""
-    },
-    {
-        "id": 9,
-        "paciente_id": "1",
-        "data": "01/04/2026",
-        "hora": "00:13",
-        "tipo": "Consulta médica",
-        "status": "Agendada",
+        "status": "Concluida",
         "observacoes": ""
     }
 ]

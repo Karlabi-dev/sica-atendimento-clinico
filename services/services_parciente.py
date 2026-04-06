@@ -9,7 +9,6 @@ def gerar_id(caminho_arquivo=caminho_arquivo):
 
     if not dados:
         return 1
-
     return max(p["id"] for p in dados) + 1
 
 def contar_pacientes():
@@ -18,7 +17,6 @@ def contar_pacientes():
 
 def salvar_paciente(paciente,caminho_arquivo=caminho_arquivo):
     dados = carregar_dados(caminho_arquivo)
-
     dados.append(paciente.to_dict())
 
     with open(caminho_arquivo, "w") as f:
@@ -58,11 +56,11 @@ def deletar_paciente(id_paciente):
     if len(dados) == len(novos_dados):
         raise Exception("Paciente não encontrado")
 
-    salvar_paciente(novos_dados,caminho_arquivo)
-    
+    with open(caminho_arquivo, "w") as f:
+        json.dump(novos_dados, f, indent=4)
+
 def atualizar_paciente(id_paciente, novos_dados):
     dados = carregar_dados()
-
     for paciente in dados:
         if paciente["id"] == id_paciente:
             ValidadorPaciente.validar_paciente(novos_dados)
@@ -72,7 +70,8 @@ def atualizar_paciente(id_paciente, novos_dados):
             paciente["telefone"] = novos_dados["telefone"]
             paciente["email"] = novos_dados["email"]
 
-            salvar_paciente(dados, caminho_arquivo)
+            with open(caminho_arquivo, "w") as f:
+                json.dump(dados, f, indent=4)
             return
 
     raise Exception("Paciente não encontrado") 

@@ -1,7 +1,9 @@
 from services.services_atendimento import (
     criar_atendimento,
     listar_atendimento,
-    deletar_atendimento
+    deletar_atendimento,
+    contar_atendimentos,
+    atualizar_atendimento
 )
 
 from validacoes.validar_atendimento import ValidadorAtendimento
@@ -25,6 +27,13 @@ class AtendimentoController:
 
         except Exception as e:
             return Response(False, erro="Erro interno: " + str(e))
+        
+    def atualizar(id_paciente, dados):
+            try:
+                atualizar_atendimento(id_paciente, dados)
+                return Response(True, "Paciente atualizado com sucesso")
+            except AtendimentoErro as e:
+                return Response(False, erro=str(e))
 
 
     @staticmethod
@@ -50,5 +59,38 @@ class AtendimentoController:
         except AtendimentoErro as e:
             return Response(False, erro=str(e))
 
+        except Exception as e:
+            return Response(False, erro=str(e))
+        
+    @staticmethod
+    def listar_por_paciente(paciente_id):
+        try:
+            atendimentos = listar_atendimento() 
+
+            filtrados = [
+                a for a in atendimentos if str(a["paciente_id"]) == str(paciente_id)
+            ]
+
+            return Response(True, dados=filtrados)
+
+        except Exception as e:
+            return Response(False, erro=str(e))
+        
+    @staticmethod
+    def atualizar_tela(tela_sem_paciente, tela_com_paciente):
+        total = contar_atendimentos()
+        if total == 0:
+            tela_sem_paciente()
+        else:
+            tela_com_paciente()
+        
+    @staticmethod
+    def buscar(id_atendimento):
+        try:
+            atendimentos = listar_atendimento()
+            for a in atendimentos:
+                if a["id"] == id_atendimento:
+                    return Response(True, dados=a)
+            return Response(False, erro="Atendimento não encontrado")
         except Exception as e:
             return Response(False, erro=str(e))

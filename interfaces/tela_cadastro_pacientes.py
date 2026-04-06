@@ -3,12 +3,16 @@ from tkinter import messagebox
 from services.services_parciente import criar_paciente
 from exceptions.paciente_exceptions import PacienteErro
 from controllers.controller_paciente import PacienteController
-from tkinter import messagebox
+from interfaces.tela_pacientes import PacienteFrame
+from tkinter import messagebox as mg
 
 class CadastroPacienteFrame(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, app, paciente=None, **kwargs):
         super().__init__(master, fg_color="#CBCBCB", corner_radius=10, **kwargs)
 
+        self.app = app
+        self.paciente = paciente
+        
         self.titulo = ctk.CTkLabel(self,text="Novo Paciente",font=("Arial", 20, "bold"))
         self.titulo.pack(pady=10, anchor ='w')
         
@@ -37,11 +41,22 @@ class CadastroPacienteFrame(ctk.CTkFrame):
         ctk.CTkLabel(self.frame_card, text="CPF *").grid(row=5, column=1, padx=10, pady=5, sticky="w")
         self.entry_cpf = ctk.CTkEntry(self.frame_card, placeholder_text="000.000.000-00")
         self.entry_cpf.grid(row=6, column=1, padx=10, pady=10, sticky="ew")
-    
-        self.btn_salvar = ctk.CTkButton(self,text="Salvar",fg_color="#1B9262",command=self.salvar_paciente)
+        
+        texto_botao = "Atualizar" if self.paciente else "Cadastrar"
+        self.btn_salvar = ctk.CTkButton(self,text=texto_botao,fg_color="#1B9262",command=self.salvar_paciente)
         self.btn_salvar.pack(side='left', pady=10, padx=(20,5))
         self.btn_cancelar = ctk.CTkButton(self,text="Cancelar",fg_color="#C64D4D",command=self.cancelar)
         self.btn_cancelar.pack(side='left', pady=10, padx=(5,20))
+        
+        if self.paciente:
+            self.preencher_dados()
+            
+    def preencher_dados(self):
+        self.entry_nome.insert(0, self.paciente["nome"])
+        self.entry_data.insert(0, self.paciente["data_nascimento"])
+        self.entry_telefone.insert(0, self.paciente["telefone"])
+        self.entry_email.insert(0, self.paciente["email"])
+        self.entry_cpf.insert(0, self.paciente["cpf"])
         
     def cancelar (self):
         self.entry_nome.delete(0, "end")
@@ -51,7 +66,6 @@ class CadastroPacienteFrame(ctk.CTkFrame):
         self.entry_cpf.delete(0,'end')
 
     def salvar_paciente(self):
-
         dados = {
             "nome": self.entry_nome.get(),
             "data_nascimento": self.entry_data.get(),
@@ -59,19 +73,18 @@ class CadastroPacienteFrame(ctk.CTkFrame):
             "email": self.entry_email.get(),
             "cpf": self.entry_cpf.get()
         }
+
         try:
-            resposta = PacienteController.criar(dados)
-
-            if resposta.sucesso:
-                messagebox.showinfo("Sucesso", resposta.mensagem)
+            if self.paciente:
+                response = PacienteController.atualizar(self.paciente["id"], dados)
             else:
-                messagebox.showerror("Erro", resposta.erro)
+                response = PacienteController.criar(dados)
 
-            self.entry_nome.delete(0, "end")
-            self.entry_data.delete(0, "end")
-            self.entry_telefone.delete(0, "end")
-            self.entry_email.delete(0, "end")
-            self.entry_cpf.delete(0,'end')
-            
-        except PacienteErro as e:
-            messagebox.showerror("Erro", str(e))
+            if response.sucesso:
+                mg.showinfo("Sucesso", response.mensagem)
+                self.app.trocar_tela(PacienteFrame)
+            else:
+                mg.showerror("Erro", response.erro)
+
+        except Exception as e:
+            mg.showerror("Erro inesperado", str(e))

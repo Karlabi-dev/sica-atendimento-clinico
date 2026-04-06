@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from datetime import datetime
+from tkinter import messagebox as mg
 
 from controllers.controller_atendimento import AtendimentoController
 from services.services_parciente import carregar_dados
@@ -7,11 +8,14 @@ from services.services_parciente import carregar_dados
 from core.status_consulta import StatusConsulta
 from core.tipo_atendimento import TipoAtendimento
 
-
 class CadastroAtendimentoFrame(ctk.CTkFrame):
 
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, app, atendimento=None, paciente=None, **kwargs):
         super().__init__(master, fg_color="#CBCBCB", corner_radius=10, **kwargs)
+
+        self.app = app
+        self.atendimento = atendimento
+        self.paciente = paciente
 
         self.titulo = ctk.CTkLabel(self,text="Novo Atendimento",font=("Arial", 20, "bold"))
         self.titulo.pack(pady=10, anchor ='w')
@@ -24,7 +28,7 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
 
         self.pacientes = carregar_dados()
         self.opcoes_pacientes = [
-            f'{p["id"]} - {p["nome"]} -{p["cpf"]}' for p in self.pacientes
+            f'ID: {p["id"]} - Nome: {p["nome"]} - CPF: {p["cpf"]}' for p in self.pacientes
         ]
         
         ctk.CTkLabel(self.frame_card, text="Selecione um paciente *").grid(row=0, column=0, padx=10, sticky='w')
@@ -89,7 +93,7 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
             self.mostrar_msg("Selecione um paciente válido", erro=True)
             return
 
-        paciente_id = paciente_str.split(" - ")[0].strip()
+        paciente_id = int(paciente_str.split(" - ")[0].replace("ID:", "").strip())
         dados = {
             "paciente_id": paciente_id,
             "data": self.entry_data.get(),
@@ -99,13 +103,20 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
             "observacoes": self.text_obs.get("0.0", "end").strip()
         }
 
-        response = AtendimentoController.criar(dados)
-
-        if response.sucesso:
-            self.mostrar_msg(response.mensagem)
+        if self.atendimento:
+            response = AtendimentoController.atualizar(self.atendimento["id"], dados)
+            mg.showinfo(
+                "Sucesso",
+                "Atendimento Atualizado com sucesso!"
+            )
             self.limpar()
         else:
-            self.mostrar_msg(response.erro, erro=True)
+            mg.showinfo(
+                "Sucesso",
+                "Atendimento cadastrado com sucesso!"
+            )
+            self.limpar()
+            response = AtendimentoController.criar(dados)
 
     def limpar(self):
         if self.opcoes_pacientes:
