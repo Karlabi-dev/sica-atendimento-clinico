@@ -3,7 +3,8 @@ from services.services_atendimento import (
     listar_atendimento,
     deletar_atendimento,
     contar_atendimentos,
-    atualizar_atendimento
+    atualizar_atendimento,
+    listar_atendimentos_por_data
 )
 
 from validacoes.validar_atendimento import ValidadorAtendimento
@@ -28,12 +29,22 @@ class AtendimentoController:
         except Exception as e:
             return Response(False, erro="Erro interno: " + str(e))
         
+    @staticmethod
     def atualizar(id_paciente, dados):
             try:
                 atualizar_atendimento(id_paciente, dados)
                 return Response(True, "Paciente atualizado com sucesso")
             except AtendimentoErro as e:
                 return Response(False, erro=str(e))
+        
+    @staticmethod
+    def listar_por_data(data):
+        """
+        Retorna atendimentos de uma data específica.
+        `data` deve estar no formato 'dd/mm/yyyy'.
+        """
+        dados = listar_atendimentos_por_data(data)  # função que você cria no service
+        return {"sucesso": True, "dados": dados}
 
 
     @staticmethod

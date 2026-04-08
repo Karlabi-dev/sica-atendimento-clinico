@@ -22,6 +22,14 @@ def salvar_todos(atendimentos):
     with open(ARQUIVO, "w", encoding="utf-8") as f:
         json.dump(atendimentos, f, indent=4, ensure_ascii=False)
 
+def listar_atendimentos_por_data(data_str):
+    """
+    data_str: 'dd/mm/yyyy'
+    Retorna a lista de atendimentos dessa data.
+    """
+    atendimentos = carregar_atendimento()
+    return [a for a in atendimentos if a["data"] == data_str]
+
 def gerar_id(atendimentos):
     if not atendimentos:
         return 1

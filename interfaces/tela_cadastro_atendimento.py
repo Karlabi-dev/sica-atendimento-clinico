@@ -20,6 +20,7 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
 
         self.titulo = ctk.CTkLabel(self,text="Novo Atendimento",font=("Arial", 20, "bold"))
         self.titulo.pack(pady=10, anchor ='w')
+        ctk.CTkLabel(self,text='Os campos com " * " condiz a campos obrigatorios!',font=("Arial", 11, "bold"), text_color="#C21212").pack(padx=20,  anchor ='w')
         
         self.frame_card= ctk.CTkFrame(self,height=200, corner_radius=10, fg_color="#E8E8E8")
         self.frame_card.pack(fill='both', expand=True, padx=20)
@@ -88,6 +89,10 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         ctk.CTkButton(self, text="Registrar", command=self.registrar, fg_color="#1B9262").pack(side='left', pady=10, padx=(20,5))
         ctk.CTkButton(self, text="Cancelar", command=self.limpar, fg_color = "#C64D4D").pack(side='left', pady=10, padx=(20,5))
         ctk.CTkButton(self, text="Usar Data/Hora Atual", command=self.preencher_agora).pack(side='left', pady=10, padx=(20,5))
+        
+        if self.atendimento:
+            self.titulo.configure(text="Atualizar Atendimento")  
+            self.preencher_campos()
 
 
     def filtrar_pacientes(self, event):
@@ -111,6 +116,25 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
 
         self.combo_paciente.configure(values=novas_opcoes)
         self.combo_paciente.set(novas_opcoes[0])
+    
+    def preencher_campos(self):
+        a = self.atendimento
+
+        paciente_id = a.get("paciente_id")
+        paciente = next((p for p in self.pacientes if p["id"] == paciente_id), None)
+        if paciente:
+            opcao = f'ID: {paciente["id"]} - Nome: {paciente["nome"]} - Documento: {paciente["doc"]}'
+            self.combo_paciente.set(opcao)
+
+        self.entry_data.set_date(a.get("data", ""))
+        self.entry_hora.delete(0, "end")
+        self.entry_hora.insert(0, a.get("hora", ""))
+
+        self.combo_tipo.set(a.get("tipo", self.combo_tipo.cget("values")[0]))
+        self.combo_status.set(a.get("status", self.combo_status.cget("values")[0]))
+
+        self.text_obs.delete("0.0", "end")
+        self.text_obs.insert("0.0", a.get("observacoes", ""))
     
     def preencher_agora(self):
         agora = datetime.now()

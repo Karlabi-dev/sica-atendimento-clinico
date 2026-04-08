@@ -37,22 +37,32 @@ class DetalhePacienteFrame(ctk.CTkFrame):
         
         ctk.CTkLabel(self,text="Histórico de Atendimentos",font=("Arial", 16, "bold")).pack(pady=(20, 5))
         resposta = AtendimentoController.listar_por_paciente(paciente["id"])
-        if resposta.sucesso and resposta.dados:
-            frame_lista = ctk.CTkFrame(self, fg_color="#E8E8E8")
-            frame_lista.pack(fill="both", expand=True, padx=20, pady=10)
-            for atendimento in resposta.dados:
-                item = ctk.CTkFrame(frame_lista, fg_color="#FFFFFF")
-                item.pack(fill="x", padx=10, pady=5)
-                ctk.CTkLabel(item,text=f"ID DO ATENDIMENTO: {atendimento['id']} - 📅 {atendimento['data']} - {atendimento['tipo']} ",anchor="w").pack(padx=10, pady=5)
-        else:
-            ctk.CTkLabel(self,text="Nenhum atendimento encontrado",text_color="gray").pack(pady=10)
+        frame_lista = ctk.CTkFrame(self,fg_color="#CBCBCB")
+        frame_lista.pack(fill="both", expand=True, padx=20)
+        
+        for atendimento in resposta.dados:
+            item = ctk.CTkFrame(frame_lista, fg_color="#FFFFFF")
+            item.pack(fill="x", padx=10, pady=5)
+            label = ctk.CTkLabel(
+                item,
+                text=f"ID: {atendimento['id']} - 📅 {atendimento['data']} - {atendimento['tipo']}",
+                anchor="w"
+            )
+            label.pack(padx=10, pady=5)
+            
+            # Tornar clicável para abrir o detalhe do atendimento
+            label.bind("<Button-1>", lambda e, a=atendimento: self.ver_atendimento(a))
             
         ctk.CTkButton(self,text="➕ Novo Atendimento",command=lambda: self.app.trocar_tela(CadastroAtendimentoFrame,paciente=self.paciente)).pack(pady=10)
  
     def voltar(self):
         from interfaces.tela_pacientes import PacienteFrame
         self.app.trocar_tela(PacienteFrame)
-        
+    
+    def ver_atendimento(self, atendimento):
+        from interfaces.tela_detalhe_atendimento import DetalheAtendimentoFrame
+        self.app.trocar_tela(DetalheAtendimentoFrame, atendimento=atendimento)
+            
     def editar_paciente(self):
         from interfaces.tela_cadastro_pacientes import CadastroPacienteFrame
 

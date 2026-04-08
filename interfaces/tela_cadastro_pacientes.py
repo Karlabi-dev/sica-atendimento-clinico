@@ -14,6 +14,7 @@ class CadastroPacienteFrame(ctk.CTkFrame):
 
         self.titulo = ctk.CTkLabel(self, text="Novo Paciente", font=("Arial", 20, "bold"))
         self.titulo.pack(pady=10, anchor='w')
+        ctk.CTkLabel(self,text='Os campos com " * " condiz a campos obrigatorios!',font=("Arial", 11, "bold"), text_color="#C21212").pack(padx=20,  anchor ='w')
 
         self.frame_card = ctk.CTkFrame(self, height=200, corner_radius=10, fg_color="#E8E8E8")
         self.frame_card.pack(fill='both', expand=True, padx=20)

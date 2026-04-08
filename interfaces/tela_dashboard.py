@@ -1,15 +1,20 @@
 import customtkinter as ctk
+from tkinter import ttk
 from tkinter import messagebox as mg
 import datetime as dt
 import locale
 
 from interfaces.tela_cadastro_pacientes import CadastroPacienteFrame
 from interfaces.tela_cadastro_atendimento import CadastroAtendimentoFrame
+from interfaces.tela_detalhes_paciente import DetalhePacienteFrame
 from interfaces.tela_atendimentos import AtendimentoFrame
 from interfaces.tela_pacientes import PacienteFrame
 
-from services.services_parciente import contar_pacientes
+from services.services_parciente import contar_pacientes,carregar_dados
 from services.services_atendimento import contar_atendimentos, contar_atendimentos_hoje
+from controllers.controller_atendimento import AtendimentoController
+from controllers.controller_paciente import PacienteController
+
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
@@ -94,42 +99,95 @@ class TelaInicial(ctk.CTk):
         
         self.card = FrameCard(self.frame_scrollbar, "Dashboard")
         self.card.pack(padx=10, pady=10, fill='both', expand=True)
-        
-        frame_titulo = ctk.CTkFrame(self.card,fg_color="#CBCBCB")
-        frame_titulo.grid(row=1, column=0, sticky="nsew",padx=10, pady=10)
+
+        # Frame do título com data e hora
+        frame_titulo = ctk.CTkFrame(self.card, fg_color="#CBCBCB")
+        frame_titulo.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
         
         label_data = ctk.CTkLabel(frame_titulo, text=self.data(), font=("Arial", 16))
         label_data.grid(row=1, column=0, sticky="w")
         
-        self.label_hora = ctk.CTkLabel(frame_titulo,font=("Arial",16))
+        self.label_hora = ctk.CTkLabel(frame_titulo, font=("Arial",16))
         self.label_hora.grid(row=2, column=0, sticky="w")
         self.atualizar_hora()
- 
+        
         self.card.grid_columnconfigure((0, 1, 2), weight=1)
         self.card.grid_rowconfigure(1, weight=1)
 
         frame_paciente = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
         frame_paciente.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
-        
         total_pacientes = contar_pacientes()
         ctk.CTkLabel(frame_paciente, text="Total de Pacientes").pack(pady=(10, 0))
-        ctk.CTkLabel(frame_paciente,text=str(total_pacientes),font=("Arial", 20)).pack(pady=10)
+        ctk.CTkLabel(frame_paciente, text=str(total_pacientes), font=("Arial", 20)).pack(pady=10)
 
         frame_atendimento = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
         frame_atendimento.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
-
-        total_atendimento=contar_atendimentos()
+        total_atendimento = contar_atendimentos()
         ctk.CTkLabel(frame_atendimento, text="Total de Atendimentos").pack(pady=(10, 0))
         ctk.CTkLabel(frame_atendimento, text=str(total_atendimento), font=("Arial", 20)).pack(pady=10)
 
         frame_hoje = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
         frame_hoje.grid(row=2, column=2, padx=10, pady=10, sticky="nsew")
-        
         total_atendimento_hoje = contar_atendimentos_hoje()
         ctk.CTkLabel(frame_hoje, text="Atendimentos Hoje").pack(pady=(10, 0))
         ctk.CTkLabel(frame_hoje, text=str(total_atendimento_hoje), font=("Arial", 20)).pack(pady=10)
 
-    from datetime import datetime
+        atendimentos_hoje = AtendimentoController.listar()
+        pacientes = carregar_dados()
+
+        hoje_str = dt.datetime.now().strftime("%d/%m/%Y")
+        atendimentos_hoje = [
+            a for a in atendimentos_hoje.dados if a["data"] == hoje_str
+        ]
+
+        frame_tree = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
+        frame_tree.grid(row=3, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
+        ctk.CTkLabel(frame_tree, text="Atendimentos recentes de hoje").pack(pady=(10, 0))
+
+        if atendimentos_hoje:
+            colunas = ("id", "paciente", "hora", "tipo", "status")
+            tree = ttk.Treeview(frame_tree, columns=colunas, show="headings", height=10)
+            for col in colunas:
+                tree.heading(col, text=col.title())
+                tree.column(col, width=120)
+            tree.pack(fill="both", expand=True, padx=10, pady=10)
+            for a in atendimentos_hoje:
+                paciente_nome = next(
+                    (p["nome"] for p in pacientes if p["id"] == a["paciente_id"]),
+                    "Desconhecido"
+                )
+                tree.insert(
+                    "", 
+                    "end", 
+                    iid=a["paciente_id"],
+                    values=(
+                        a["id"],
+                        paciente_nome,
+                        a["hora"],
+                        a["tipo"],
+                        a["status"]
+                    )
+                )
+                
+                def abrir_paciente(event):
+                    item_selecionado = tree.focus() 
+                    if item_selecionado:
+                        paciente_id = item_selecionado 
+                        resposta = PacienteController.buscar(paciente_id)
+
+                        if resposta.sucesso and resposta.dados:
+                            self.trocar_tela(DetalhePacienteFrame, paciente=resposta.dados)
+                        else:
+                            mg.showerror("Erro", resposta.erro)
+   
+
+                tree.bind("<Double-1>", abrir_paciente)
+        else:
+            ctk.CTkLabel(frame_tree, text="Nenhum atendimento realizado hoje", text_color="gray").pack(pady=20)
+
+        ctk.CTkButton(frame_tree, text="➕ Novo Atendimento", fg_color="#1B9262",
+                    command=lambda: self.trocar_tela(CadastroAtendimentoFrame)).pack(pady=10)
+
 
     def data(self):
         dias = [
