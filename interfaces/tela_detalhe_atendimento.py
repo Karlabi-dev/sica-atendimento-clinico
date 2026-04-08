@@ -2,6 +2,7 @@ import customtkinter as ctk
 from controllers.controller_atendimento import AtendimentoController
 from interfaces.tela_cadastro_atendimento import CadastroAtendimentoFrame
 
+
 class DetalheAtendimentoFrame(ctk.CTkFrame):
 
     def __init__(self, master, app, atendimento, **kwargs):
@@ -61,7 +62,8 @@ class DetalheAtendimentoFrame(ctk.CTkFrame):
             ctk.CTkLabel(frame_paciente, text=f"Nascimento {p['data_nascimento']}",font=("Arial", 16, "bold")).pack(anchor="w", padx=10)
             ctk.CTkLabel(frame_paciente, text=f"Telefone: {p['telefone']}",font=("Arial", 16, "bold")).pack(anchor="w", padx=10)
             ctk.CTkLabel(frame_paciente, text=f"Email: {p['email']}",font=("Arial", 16, "bold")).pack(anchor="w", padx=10)
-            ctk.CTkLabel(frame_paciente, text=f"CPF: {p['cpf']}",font=("Arial", 16, "bold")).pack(anchor="w", padx=10)
+            ctk.CTkLabel(frame_paciente, text=f"Documento: {p['doc']}",font=("Arial", 16, "bold")).pack(anchor="w", padx=10)
+            ctk.CTkLabel(frame_paciente, text=f"Tipo de documento: {p['tipo_documento']}",font=("Arial", 16, "bold")).pack(anchor="w", padx=10)
         else:
             ctk.CTkLabel(frame_paciente, text="Paciente não encontrado", text_color="red",font=("Arial", 16, "bold")).pack( pady=10)
 

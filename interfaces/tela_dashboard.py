@@ -91,44 +91,73 @@ class TelaInicial(ctk.CTk):
             
     def abrir_dashboard(self):
         self.limpar_tela()
-
-        label_data = ctk.CTkLabel(self.frame_scrollbar, text=self.data(), font=("Arial", 16))
-        label_data.pack(pady=(20,10), anchor='w')
-
+        
         self.card = FrameCard(self.frame_scrollbar, "Dashboard")
         self.card.pack(padx=10, pady=10, fill='both', expand=True)
-
+        
+        frame_titulo = ctk.CTkFrame(self.card,fg_color="#CBCBCB")
+        frame_titulo.grid(row=1, column=0, sticky="nsew",padx=10, pady=10)
+        
+        label_data = ctk.CTkLabel(frame_titulo, text=self.data(), font=("Arial", 16))
+        label_data.grid(row=1, column=0, sticky="w")
+        
+        self.label_hora = ctk.CTkLabel(frame_titulo,font=("Arial",16))
+        self.label_hora.grid(row=2, column=0, sticky="w")
+        self.atualizar_hora()
+ 
         self.card.grid_columnconfigure((0, 1, 2), weight=1)
         self.card.grid_rowconfigure(1, weight=1)
 
         frame_paciente = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
-        frame_paciente.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        frame_paciente.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
         
         total_pacientes = contar_pacientes()
         ctk.CTkLabel(frame_paciente, text="Total de Pacientes").pack(pady=(10, 0))
         ctk.CTkLabel(frame_paciente,text=str(total_pacientes),font=("Arial", 20)).pack(pady=10)
 
         frame_atendimento = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
-        frame_atendimento.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+        frame_atendimento.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
 
         total_atendimento=contar_atendimentos()
         ctk.CTkLabel(frame_atendimento, text="Total de Atendimentos").pack(pady=(10, 0))
         ctk.CTkLabel(frame_atendimento, text=str(total_atendimento), font=("Arial", 20)).pack(pady=10)
 
         frame_hoje = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
-        frame_hoje.grid(row=1, column=2, padx=10, pady=10, sticky="nsew")
+        frame_hoje.grid(row=2, column=2, padx=10, pady=10, sticky="nsew")
         
         total_atendimento_hoje = contar_atendimentos_hoje()
         ctk.CTkLabel(frame_hoje, text="Atendimentos Hoje").pack(pady=(10, 0))
         ctk.CTkLabel(frame_hoje, text=str(total_atendimento_hoje), font=("Arial", 20)).pack(pady=10)
 
+    from datetime import datetime
+
     def data(self):
-        locale.setlocale(locale.LC_TIME, "pt-BR")
-        mes = dt.date.today().strftime("%B")
-        ano = dt.date.today().strftime("%Y")
-        dia_num = dt.date.today().strftime("%d")
-        dia_nome = dt.date.today().strftime("%A")
-        return f"{dia_nome.capitalize()}, {dia_num} de {mes.capitalize()}-{ano}"
+        dias = [
+            "segunda-feira", "terça-feira", "quarta-feira",
+            "quinta-feira", "sexta-feira", "sábado", "domingo"
+        ]
+
+        meses = [
+            "janeiro", "fevereiro", "março", "abril",
+            "maio", "junho", "julho", "agosto",
+            "setembro", "outubro", "novembro", "dezembro"
+        ]
+
+        agora = dt.datetime.now()
+
+        dia_semana = dias[agora.weekday()]
+        mes = meses[agora.month - 1]
+
+        data_formatada = f"{dia_semana}, {agora.day:02d} de {mes} de {agora.year}"
+
+        return data_formatada.capitalize()
+    
+    def atualizar_hora(self):
+        agora = dt.datetime.now()
+        hora_fromatada= agora.strftime("%H:%M:%S")
+        self.label_hora.configure(text=f"Horario Atual: {hora_fromatada}")
+        self.label_hora.after(1000,self.atualizar_hora)
+        
 
     def trocar_tela(self, TelaClasse, **kwargs):
         for widget in self.frame_scrollbar.winfo_children():

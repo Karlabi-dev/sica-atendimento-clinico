@@ -50,7 +50,7 @@ class PacienteFrame(ctk.CTkFrame):
             command=self.limpar_busca
         ).grid(row=0, column=3, padx=5)
 
-        colunas = ("id", "nome", "data_nascimento", "telefone", "email", "cpf")
+        colunas = ("id", "nome", "data_nascimento", "telefone", "email", "doc", "tipo_documento")
         self.tree_pacientes = ttk.Treeview(self.frame_card, columns=colunas, show="headings", height=15)
         for col in colunas:
             self.tree_pacientes.heading(col, text=col.title())
@@ -92,7 +92,8 @@ class PacienteFrame(ctk.CTkFrame):
                         dado["data_nascimento"],
                         dado["telefone"],
                         dado["email"],
-                        dado["cpf"]
+                        dado["doc"],
+                        dado["tipo_documento"]
                     )
                 )
                 
@@ -172,7 +173,8 @@ class PacienteFrame(ctk.CTkFrame):
                     p["data_nascimento"],
                     p["telefone"],
                     p["email"],
-                    p["cpf"]
+                    p["doc"],
+                    p["tipo_documento"]
                 )
             )
  

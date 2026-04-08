@@ -26,7 +26,8 @@ class DetalhePacienteFrame(ctk.CTkFrame):
         linha("Nascimento:", paciente["data_nascimento"])
         linha("Telefone:", paciente["telefone"])
         linha("Email:", paciente["email"])
-        linha("CPF:", paciente["cpf"])
+        linha("Documento:", paciente["doc"])
+        linha("Tipo de documento:", paciente["tipo_documento"])
         
         frame_botoes = ctk.CTkFrame(self,fg_color="#CBCBCB")
         frame_botoes.pack(fill="both", expand=True, padx=20)

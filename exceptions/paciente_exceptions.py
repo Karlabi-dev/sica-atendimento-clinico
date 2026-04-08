@@ -7,7 +7,6 @@ class CampoObrigatorioErro(PacienteErro):
         super().__init__(f"O campo '{campo}' é obrigatório")
 
 
-
 class EmailInvalidoErro(PacienteErro):
     def __init__(self):
         super().__init__("Email inválido")
@@ -22,11 +21,12 @@ class DataFuturaErro(PacienteErro):
     def __init__(self):
         super().__init__("Data de nascimento não pode ser no futuro")
         
-class CPFInvalidoErro(PacienteErro):
-    def __init__(self):
-        super().__init__("CPF inválido")
-
 
 class TelefoneInvalidoErro(PacienteErro):
     def __init__(self):
         super().__init__("Telefone inválido")
+        
+
+class DocumentoInvalidoError(PacienteErro):
+    def __init__(self, mensagem="Documento inválido"):
+        super().__init__(mensagem)

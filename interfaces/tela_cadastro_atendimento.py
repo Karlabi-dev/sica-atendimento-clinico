@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from datetime import datetime
 from tkinter import messagebox as mg
+from tkcalendar import DateEntry
 
 from controllers.controller_atendimento import AtendimentoController
 from services.services_parciente import carregar_dados
@@ -27,9 +28,17 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         self.frame_card.grid_columnconfigure(1, weight=1)
 
         self.pacientes = carregar_dados()
+        self.pacientes_filtrados = self.pacientes.copy()
+    
         self.opcoes_pacientes = [
-            f'ID: {p["id"]} - Nome: {p["nome"]} - CPF: {p["cpf"]}' for p in self.pacientes
+            f'ID: {p["id"]} - Nome: {p["nome"]} - Documento: {p["doc"]} ' for p in self.pacientes
         ]
+        ctk.CTkLabel(self.frame_card, text="Buscar paciente").grid(row=0, column=1, padx=10, sticky='w')
+
+        self.entry_busca = ctk.CTkEntry(self.frame_card, placeholder_text="Digite o nome...")
+        self.entry_busca.grid(row=1, column=1, padx=10, pady=5, sticky='ew')
+
+        self.entry_busca.bind("<KeyRelease>", self.filtrar_pacientes)
         
         ctk.CTkLabel(self.frame_card, text="Selecione um paciente *").grid(row=0, column=0, padx=10, sticky='w')
 
@@ -39,10 +48,13 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         )
         self.combo_paciente.grid(row=1, column=0, pady=10, padx=10, sticky='ew')
         
-        ctk.CTkLabel(self.frame_card, text="Data (dd/mm/yyyy): *").grid(row=2, column=0, padx=10, sticky='w')
-
-        self.entry_data = ctk.CTkEntry(self.frame_card)
-        self.entry_data.grid(row=3, column=0,pady=10, padx=10, sticky='ew')
+        ctk.CTkLabel(self.frame_card, text="Data do Atendimento *").grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        self.entry_data = DateEntry(
+            self.frame_card,
+            date_pattern="dd/mm/yyyy",
+            font=("Arial",16)
+        )
+        self.entry_data.grid(row=3, column=0, padx=10, pady=5, sticky="ew")
 
         ctk.CTkLabel(self.frame_card, text="Hora (HH:MM): *").grid(row=2, column=1, padx=10, sticky='w')
 
@@ -77,6 +89,29 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         ctk.CTkButton(self, text="Cancelar", command=self.limpar, fg_color = "#C64D4D").pack(side='left', pady=10, padx=(20,5))
         ctk.CTkButton(self, text="Usar Data/Hora Atual", command=self.preencher_agora).pack(side='left', pady=10, padx=(20,5))
 
+
+    def filtrar_pacientes(self, event):
+        busca = self.entry_busca.get().lower()
+
+        if not busca:
+            self.pacientes_filtrados = self.pacientes
+        else:
+            self.pacientes_filtrados = [
+                p for p in self.pacientes
+                if busca in p["nome"].lower()
+            ]
+
+        novas_opcoes = [
+            f'ID: {p["id"]} - Nome: {p["nome"]} - doc: {p["doc"]}'
+            for p in self.pacientes_filtrados
+        ]
+
+        if not novas_opcoes:
+            novas_opcoes = ["Nenhum paciente encontrado"]
+
+        self.combo_paciente.configure(values=novas_opcoes)
+        self.combo_paciente.set(novas_opcoes[0])
+    
     def preencher_agora(self):
         agora = datetime.now()
 

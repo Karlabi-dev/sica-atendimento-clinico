@@ -6,7 +6,8 @@ from exceptions.paciente_exceptions import (
     EmailInvalidoErro,
     DataNascimentoInvalidaErro,
     DataFuturaErro,
-    PacienteErro
+    PacienteErro,
+    DocumentoInvalidoError
 )
 
 class ValidadorPaciente:
@@ -25,26 +26,25 @@ class ValidadorPaciente:
             raise PacienteErro("Nome deve ter pelo menos 3 caracteres")
 
     @staticmethod
-    def validar_cpf(cpf):
-        if not cpf:
-            raise PacienteErro("CPF é obrigatório")
+    
+    def validar_doc(documento, tipo):
+        doc = documento.strip()
 
-        cpf = cpf.replace(".", "").replace("-", "")
+        if not doc:
+            raise DocumentoInvalidoError("Documento é obrigatório")
 
-        if not cpf.isdigit() or len(cpf) != 11:
-            raise PacienteErro("CPF inválido")
+        if tipo == "CPF":
+            doc_limpo = doc.replace(".", "").replace("-", "")
 
-        # evita tipo 11111111111
-        if cpf == cpf[0] * 11:
-            raise PacienteErro("CPF inválido")
+            if not doc_limpo.isdigit() or len(doc_limpo) != 11:
+                raise DocumentoInvalidoError("CPF deve conter 11 números")
 
-        # validação real do CPF
-        for i in range(9, 11):
-            soma = sum(int(cpf[num]) * ((i + 1) - num) for num in range(0, i))
-            digito = ((soma * 10) % 11) % 10
+        elif tipo == "RG":
+            if len(doc) < 5 or len(doc) > 12:
+                raise DocumentoInvalidoError("RG inválido")
 
-            if int(cpf[i]) != digito:
-                raise PacienteErro("CPF inválido")
+        else:
+            raise DocumentoInvalidoError("Tipo de documento inválido")
 
     @staticmethod
     def validar_telefone(telefone):
@@ -78,5 +78,5 @@ class ValidadorPaciente:
         ValidadorPaciente.validar_nome(dados["nome"])
         ValidadorPaciente.validar_email(dados["email"])
         ValidadorPaciente.validar_data_nascimento(dados["data_nascimento"])
-        ValidadorPaciente.validar_cpf(dados["cpf"])
+        ValidadorPaciente.validar_doc(dados["doc"], dados["tipo_documento"])
         ValidadorPaciente.validar_telefone(dados["telefone"])

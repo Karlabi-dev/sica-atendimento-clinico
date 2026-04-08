@@ -33,7 +33,8 @@ def criar_paciente(dados, caminho_arquivo=caminho_arquivo):
         data_nascimento=dados["data_nascimento"],
         telefone=dados["telefone"],
         email=dados["email"],
-        cpf=dados["cpf"]
+        doc=dados["doc"],
+        tipo_documento= dados["tipo_documento"]
     )
 
     salvar_paciente(paciente, caminho_arquivo)
@@ -69,6 +70,8 @@ def atualizar_paciente(id_paciente, novos_dados):
             paciente["data_nascimento"] = novos_dados["data_nascimento"]
             paciente["telefone"] = novos_dados["telefone"]
             paciente["email"] = novos_dados["email"]
+            paciente["doc"] = novos_dados["doc"]
+            paciente["tipo_documento"] = novos_dados["tipo_documento"]
 
             with open(caminho_arquivo, "w") as f:
                 json.dump(dados, f, indent=4)
