@@ -10,10 +10,10 @@ class DetalhePacienteFrame(ctk.CTkFrame):
         self.app = app
         self.paciente = paciente
 
-        ctk.CTkLabel(self,text="Detalhes do Paciente",font=("Arial", 20, "bold")).pack(pady=10)
+        ctk.CTkLabel(self,text="Detalhes do Paciente",font=("Arial", 26, "bold")).pack(pady=10, padx=10)
         
         container = ctk.CTkFrame(self, fg_color="#E8E8E8")
-        container.pack(fill="both", expand=True, padx=20, pady=10)
+        container.pack(padx=10, pady=10, fill='both', expand=True)
 
         def linha(label, valor):
             frame = ctk.CTkFrame(container, fg_color="transparent")

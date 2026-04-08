@@ -13,7 +13,7 @@ class AtendimentoFrame(ctk.CTkFrame):
         super().__init__(master, fg_color="#CBCBCB", corner_radius=10, **kwargs)
         self.app = app  
 
-        self.titulo = ctk.CTkLabel(self, text="Atendimentos", font=("Arial", 20, "bold"))
+        self.titulo = ctk.CTkLabel(self, text="Atendimentos", font=("Arial", 26, "bold"))
         self.titulo.pack(pady=10, padx=10, anchor='w')
 
         # LOADING
@@ -27,7 +27,7 @@ class AtendimentoFrame(ctk.CTkFrame):
         self.after(1000, self.iniciar_carregamento)
 
         self.frame_card = ctk.CTkFrame(self, corner_radius=10, fg_color="#E8E8E8")
-        self.frame_card.pack(fill='both', expand=True, padx=20, pady=10)
+        self.frame_card.pack(padx=10, pady=10, fill='both', expand=True)
 
         busca_frame = tk.Frame(self.frame_card, bg="#E8E8E8")
         busca_frame.pack(pady=10)

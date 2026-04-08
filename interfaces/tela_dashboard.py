@@ -28,7 +28,7 @@ class FrameCard(ctk.CTkFrame):
         self.titulo = ctk.CTkLabel(
             self,
             text=titulo,
-            font=("Arial", 20, "bold")
+            font=("Arial", 26, "bold")
         )
         self.titulo.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
@@ -53,7 +53,7 @@ class TelaInicial(ctk.CTk):
                 master,
                 text=texto,
                 command=comando,
-                fg_color="#1B263B",
+                fg_color="#6181BB",
                 hover_color="#324A6D",
                 text_color="white",
                 corner_radius=10,
@@ -71,14 +71,14 @@ class TelaInicial(ctk.CTk):
         linha = ctk.CTkFrame(self.menu_lateral, height=2, fg_color="#666666")
         linha.pack(fill="x", padx=5, pady=(0, 10))
 
-        botao_menu(self.menu_lateral, "Dashboard", self.abrir_dashboard).pack(padx=5, fill='x')
-        botao_menu(self.menu_lateral, "Pacientes", self.abrir_tela_pacientes).pack(padx=5, fill='x')
-        botao_menu(self.menu_lateral, "Atendimentos",self.abrir_tela_atendimentos).pack(padx=5, fill='x')
-        botao_menu(self.menu_lateral, "Novo Paciente", self.abrir_tela_cadastro_paciente).pack(padx=5, fill='x')
-        botao_menu(self.menu_lateral, "Novo Atendimento", self.abrir_tela_cadastro_atendimento).pack(padx=5, fill='x')
-        botao_menu(self.menu_lateral, "Sair", self.sair).pack(padx=5, fill='x')
+        botao_menu(self.menu_lateral, "Dashboard", self.abrir_dashboard).pack(padx=5, pady=5, fill='x')
+        botao_menu(self.menu_lateral, "Pacientes", self.abrir_tela_pacientes).pack(padx=5,pady=5, fill='x')
+        botao_menu(self.menu_lateral, "Atendimentos",self.abrir_tela_atendimentos).pack(padx=5,pady=5, fill='x')
+        botao_menu(self.menu_lateral, "Novo Paciente", self.abrir_tela_cadastro_paciente).pack(padx=5,pady=5, fill='x')
+        botao_menu(self.menu_lateral, "Novo Atendimento", self.abrir_tela_cadastro_atendimento).pack(padx=5,pady=5, fill='x')
+        botao_menu(self.menu_lateral, "Sair", self.sair).pack(padx=5,pady=5, fill='x')
 
-        self.frame_scrollbar = ctk.CTkScrollableFrame(self, fg_color="#CBCBCB")
+        self.frame_scrollbar = ctk.CTkScrollableFrame(self, fg_color="#8A8787", corner_radius=0)
         self.frame_scrollbar.pack(fill='both', expand=True)
 
         self.abrir_dashboard()
@@ -100,36 +100,36 @@ class TelaInicial(ctk.CTk):
         self.card = FrameCard(self.frame_scrollbar, "Dashboard")
         self.card.pack(padx=10, pady=10, fill='both', expand=True)
 
-        # Frame do título com data e hora
         frame_titulo = ctk.CTkFrame(self.card, fg_color="#CBCBCB")
         frame_titulo.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
         
-        label_data = ctk.CTkLabel(frame_titulo, text=self.data(), font=("Arial", 16))
+        label_data = ctk.CTkLabel(frame_titulo, text=self.data(), font=("Arial", 16, 'bold'))
         label_data.grid(row=1, column=0, sticky="w")
         
-        self.label_hora = ctk.CTkLabel(frame_titulo, font=("Arial",16))
+        self.label_hora = ctk.CTkLabel(frame_titulo, font=("Arial", 16, 'bold'))
         self.label_hora.grid(row=2, column=0, sticky="w")
         self.atualizar_hora()
         
+
         self.card.grid_columnconfigure((0, 1, 2), weight=1)
         self.card.grid_rowconfigure(1, weight=1)
 
-        frame_paciente = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
+        frame_paciente = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
         frame_paciente.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
         total_pacientes = contar_pacientes()
-        ctk.CTkLabel(frame_paciente, text="Total de Pacientes").pack(pady=(10, 0))
+        ctk.CTkLabel(frame_paciente, text="👤 Total de Pacientes", font=("Arial", 16)).pack(pady=(10, 0))
         ctk.CTkLabel(frame_paciente, text=str(total_pacientes), font=("Arial", 20)).pack(pady=10)
 
-        frame_atendimento = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
+        frame_atendimento = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
         frame_atendimento.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
         total_atendimento = contar_atendimentos()
-        ctk.CTkLabel(frame_atendimento, text="Total de Atendimentos").pack(pady=(10, 0))
+        ctk.CTkLabel(frame_atendimento, text="🏥 Total de Atendimentos", font=("Arial", 16)).pack(pady=(10, 0))
         ctk.CTkLabel(frame_atendimento, text=str(total_atendimento), font=("Arial", 20)).pack(pady=10)
 
-        frame_hoje = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
+        frame_hoje = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
         frame_hoje.grid(row=2, column=2, padx=10, pady=10, sticky="nsew")
         total_atendimento_hoje = contar_atendimentos_hoje()
-        ctk.CTkLabel(frame_hoje, text="Atendimentos Hoje").pack(pady=(10, 0))
+        ctk.CTkLabel(frame_hoje, text="🏥 Atendimentos Hoje", font=("Arial", 16)).pack(pady=(10, 0))
         ctk.CTkLabel(frame_hoje, text=str(total_atendimento_hoje), font=("Arial", 20)).pack(pady=10)
 
         atendimentos_hoje = AtendimentoController.listar()
@@ -221,7 +221,7 @@ class TelaInicial(ctk.CTk):
         for widget in self.frame_scrollbar.winfo_children():
             widget.destroy()
         self.tela_atual = TelaClasse(self.frame_scrollbar, self, **kwargs)
-        self.tela_atual.pack(fill='both', expand=True)
+        self.tela_atual.pack(padx=10, pady=10, fill='both', expand=True)
     
         
     def abrir_tela_cadastro_paciente(self):

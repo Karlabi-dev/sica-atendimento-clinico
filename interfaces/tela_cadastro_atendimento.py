@@ -18,12 +18,12 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         self.atendimento = atendimento
         self.paciente = paciente
 
-        self.titulo = ctk.CTkLabel(self,text="Novo Atendimento",font=("Arial", 20, "bold"))
-        self.titulo.pack(pady=10, anchor ='w')
+        self.titulo = ctk.CTkLabel(self,text="Novo Atendimento",font=("Arial", 26, "bold"))
+        self.titulo.pack(pady=10,padx=10, anchor ='w')
         ctk.CTkLabel(self,text='Os campos com " * " condiz a campos obrigatorios!',font=("Arial", 11, "bold"), text_color="#C21212").pack(padx=20,  anchor ='w')
         
         self.frame_card= ctk.CTkFrame(self,height=200, corner_radius=10, fg_color="#E8E8E8")
-        self.frame_card.pack(fill='both', expand=True, padx=20)
+        self.frame_card.pack(padx=10, pady=10, fill='both', expand=True)
         
         self.frame_card.grid_columnconfigure(0, weight=1)
         self.frame_card.grid_columnconfigure(1, weight=1)

@@ -11,7 +11,7 @@ class PacienteFrame(ctk.CTkFrame):
         super().__init__(master,fg_color="#CBCBCB", corner_radius=10, **kwargs)
         self.app = app  
 
-        self.titulo = ctk.CTkLabel(self, text="Pacientes", font=("Arial", 20, "bold"))
+        self.titulo = ctk.CTkLabel(self, text="Pacientes", font=("Arial", 26, "bold"))
         self.titulo.pack(pady=10,padx=10, anchor='w')
         
         self.label_loading = ctk.CTkLabel(
@@ -24,7 +24,7 @@ class PacienteFrame(ctk.CTkFrame):
         self.after(1000, self.iniciar_carregamento)
         
         self.frame_card = ctk.CTkFrame(self, height=200, corner_radius=10, fg_color="#E8E8E8")
-        self.frame_card.pack(fill='both', expand=True, padx=20, pady=10)
+        self.frame_card.pack(padx=10, pady=10, fill='both', expand=True)
         
         busca_frame = tk.Frame(self.frame_card, bg="#E8E8E8")
         busca_frame.pack(pady=10)
@@ -50,11 +50,17 @@ class PacienteFrame(ctk.CTkFrame):
             command=self.limpar_busca
         ).grid(row=0, column=3, padx=5)
 
-        colunas = ("id", "nome", "data_nascimento", "telefone", "email", "doc", "tipo_documento")
-        self.tree_pacientes = ttk.Treeview(self.frame_card, columns=colunas, show="headings", height=15)
-        for col in colunas:
-            self.tree_pacientes.heading(col, text=col.title())
-            self.tree_pacientes.column(col, width=120)
+        self.tree_pacientes = ttk.Treeview(self.frame_card, columns=("Id", "Nome", "Data Nascimento", "Telefone", "Email", "Documento", "Tipo documento"), show="headings", height=15)
+        for col in self.tree_pacientes['columns']:
+            self.tree_pacientes.heading(col, text=col)
+        self.tree_pacientes.column("Id", width=50,stretch=False)
+        self.tree_pacientes.column("Nome", width=300,stretch=False)
+        self.tree_pacientes.column("Data Nascimento", width=100,stretch=False)   
+        self.tree_pacientes.column("Telefone", width=100,stretch=False)
+        self.tree_pacientes.column("Email", width=300,stretch=False)
+        self.tree_pacientes.column("Documento", width=100,stretch=False)
+        self.tree_pacientes.column("Tipo documento", width=100,stretch=False)
+
         self.tree_pacientes.pack(fill="both", expand=True)
 
         scroll = ttk.Scrollbar(self.frame_card, orient="vertical", command=self.tree_pacientes.yview)
