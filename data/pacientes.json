@@ -5,7 +5,8 @@
         "data_nascimento": "19/03/2005",
         "telefone": "987876756745",
         "email": "karla34@gmail.com",
-        "cpf": "09876543212"
+        "doc": "09876543212",
+        "tipo_documento": "CPF"
     },
     {
         "id": 3,
@@ -13,6 +14,16 @@
         "data_nascimento": "18/09/2005",
         "telefone": "85998765432",
         "email": "maria@gmail.com",
-        "cpf": "09876543223"
+        "doc": "09876543223",
+        "tipo_documento": "CPF"
+    },
+    {
+        "id": 4,
+        "nome": "karla",
+        "data_nascimento": "19/02/1111",
+        "telefone": "85992455842",
+        "email": "karla@gmail.com",
+        "doc": "20222379159",
+        "tipo_documento": "RG"
     }
 ]
