@@ -11,39 +11,91 @@ class DetalheAtendimentoFrame(ctk.CTkFrame):
         self.app = app
         self.atendimento = atendimento
 
-        ctk.CTkLabel(
-            self,
-            text="Detalhes do Atendimento",
-            font=("Arial", 26, "bold")
-        ).pack(pady=10,padx=10)
-
-        container = ctk.CTkFrame(self, fg_color="#E8E8E8")
+        container = ctk.CTkScrollableFrame(self, fg_color="#CBCBCB")
         container.pack(padx=10, pady=10, fill='both', expand=True)
 
-        # Função para criar linhas de informação
-        def linha(label, valor):
-            frame = ctk.CTkFrame(container, fg_color="transparent")
-            frame.pack(fill="x", pady=5, padx=10)
-            ctk.CTkLabel(frame, text=label, width=150, anchor="w", font=("Arial", 14, "bold")).pack(side="left")
-            ctk.CTkLabel(frame, text=valor, anchor="w", font=("Arial", 14)).pack(side="left")
+        def criar_card(titulo):
+            card = ctk.CTkFrame(container, fg_color="#E8E8E8", corner_radius=10)
+            card.pack(fill="both", pady=10, padx=10, expand=True)
 
-        # Informações do atendimento
-        linha("ID:", atendimento["id"])
-        linha("Paciente ID:", atendimento["paciente_id"])
-        linha("Data:", atendimento["data"])
-        linha("Hora:", atendimento["hora"])
-        linha("Tipo:", atendimento["tipo"])
-        linha("Status:", atendimento["status"])
-        linha("Observações:", atendimento.get("observacoes", ""))
+            ctk.CTkLabel(
+                card,
+                text=titulo,
+                font=("Arial", 18, "bold")
+            ).pack(anchor="w", padx=10, pady=(10, 5))
 
-        # Botões
-        frame_botoes = ctk.CTkFrame(self, fg_color="#CBCBCB")
-        frame_botoes.pack(fill="both", expand=True, padx=20, pady=10)
+            return card
 
-        ctk.CTkButton(frame_botoes, text="⬅ Voltar", command=self.voltar).pack(pady=10, side='left', padx=10)
-        ctk.CTkButton(frame_botoes, text="✏️ Atualizar Atendimento", command=self.atualizar_atendimento).pack(side='left', pady=10, padx=10)
-        
-        self.mostrar_paciente()
+        def linha(parent, label, valor):
+            frame = ctk.CTkFrame(parent, fg_color="transparent")
+            frame.pack(fill="x", pady=3, padx=10)
+
+            ctk.CTkLabel(
+                frame,
+                text=label,
+                width=140,
+                anchor="w",
+                font=("Arial", 13, "bold")
+            ).pack(side="left")
+
+            ctk.CTkLabel(
+                frame,
+                text=valor,
+                anchor="w",
+                font=("Arial", 13)
+            ).pack(side="left")
+
+        card_atendimento = criar_card("Informações do Atendimento")
+
+        linha(card_atendimento, "ID:", atendimento["id"])
+        linha(card_atendimento, "Paciente ID:", atendimento["paciente_id"])
+        linha(card_atendimento, "Data:", atendimento["data"])
+        linha(card_atendimento, "Hora:", atendimento["hora"])
+        linha(card_atendimento, "Tipo:", atendimento["tipo"])
+        linha(card_atendimento, "Status:", atendimento["status"])
+        linha(card_atendimento, "Observações:", atendimento.get("observacoes", ""))
+
+        from controllers.controller_paciente import PacienteController
+
+        paciente_id = atendimento['paciente_id']
+        resposta = PacienteController.buscar(paciente_id)
+
+        card_paciente = criar_card("Informações do Paciente")
+
+        if resposta.sucesso and resposta.dados:
+            p = resposta.dados
+
+            linha(card_paciente, "ID:", p['id'])
+            linha(card_paciente, "Nome:", p['nome'])
+            linha(card_paciente, "Nascimento:", p['data_nascimento'])
+            linha(card_paciente, "Telefone:", p['telefone'])
+            linha(card_paciente, "Email:", p['email'])
+            linha(card_paciente, "Documento:", p['doc'])
+            linha(card_paciente, "Tipo:", p['tipo_documento'])
+
+        else:
+            ctk.CTkLabel(
+                card_paciente,
+                text="Paciente não encontrado",
+                text_color="red",
+                font=("Arial", 14, "bold")
+            ).pack(pady=10)
+
+ 
+        botoes = ctk.CTkFrame(container, fg_color="#CBCBCB")
+        botoes.pack(fill="x", pady=10, padx=10)
+
+        ctk.CTkButton(
+            botoes,
+            text="⬅ Voltar",
+            command=self.voltar
+        ).pack(side="left", padx=5)
+
+        ctk.CTkButton(
+            botoes,
+            text="✏️ Atualizar Atendimento",
+            command=self.atualizar_atendimento
+        ).pack(side="left", padx=5)
         
     def mostrar_paciente(self):
         from controllers.controller_paciente import PacienteController

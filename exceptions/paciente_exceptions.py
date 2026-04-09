@@ -14,7 +14,7 @@ class EmailInvalidoErro(PacienteErro):
 
 class DataNascimentoInvalidaErro(PacienteErro):
     def __init__(self):
-        super().__init__("Data de nascimento inválida ou no formato incorreto (DD/MM/YYYY)")
+        super().__init__("Data de nascimento inválida ou no formato incorreto (DD/MM/YYYY)") 
 
 
 class DataFuturaErro(PacienteErro):

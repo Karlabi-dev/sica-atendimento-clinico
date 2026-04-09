@@ -80,6 +80,17 @@ class TelaInicial(ctk.CTk):
 
         self.frame_scrollbar = ctk.CTkScrollableFrame(self, fg_color="#8A8787", corner_radius=0)
         self.frame_scrollbar.pack(fill='both', expand=True)
+        
+        topo_baixo = ctk.CTkFrame(self, fg_color="transparent", height=10)
+        topo_baixo.pack(padx=10, pady=5, fill='x',side='bottom')
+
+        self.marca = ctk.CTkLabel(
+            topo_baixo,
+            text="SICA - AUTENTICADA - DESENVOLVEDORA - KARLA BIANCA",
+            font=("Arial",10,"bold"),
+            text_color="#BAB1B1"
+        )
+        self.marca.place(relx=0.5, rely=0.5,anchor="center")
 
         self.abrir_dashboard()
         
@@ -215,14 +226,12 @@ class TelaInicial(ctk.CTk):
         hora_fromatada= agora.strftime("%H:%M:%S")
         self.label_hora.configure(text=f"Horario Atual: {hora_fromatada}")
         self.label_hora.after(1000,self.atualizar_hora)
-        
 
     def trocar_tela(self, TelaClasse, **kwargs):
         for widget in self.frame_scrollbar.winfo_children():
             widget.destroy()
         self.tela_atual = TelaClasse(self.frame_scrollbar, self, **kwargs)
-        self.tela_atual.pack(padx=10, pady=10, fill='both', expand=True)
-    
+        self.tela_atual.pack(padx=20, pady=20, fill='both', expand=True)
         
     def abrir_tela_cadastro_paciente(self):
         self.trocar_tela(CadastroPacienteFrame)
