@@ -11,7 +11,7 @@ class DetalheAtendimentoFrame(ctk.CTkFrame):
         self.app = app
         self.atendimento = atendimento
 
-        container = ctk.CTkScrollableFrame(self, fg_color="#CBCBCB")
+        container = ctk.CTkFrame(self, fg_color="#CBCBCB")
         container.pack(padx=10, pady=10, fill='both', expand=True)
 
         def criar_card(titulo):

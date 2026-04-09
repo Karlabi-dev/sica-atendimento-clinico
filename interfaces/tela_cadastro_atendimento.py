@@ -12,15 +12,15 @@ from core.tipo_atendimento import TipoAtendimento
 class CadastroAtendimentoFrame(ctk.CTkFrame):
 
     def __init__(self, master, app, atendimento=None, paciente=None, **kwargs):
-        super().__init__(master, fg_color="#CBCBCB", corner_radius=10, **kwargs)
+        super().__init__(master, fg_color="#0B1F2E", corner_radius=10, **kwargs)
 
         self.app = app
         self.atendimento = atendimento
         self.paciente = paciente
 
-        self.titulo = ctk.CTkLabel(self,text="Novo Atendimento",font=("Arial", 26, "bold"))
+        self.titulo = ctk.CTkLabel(self,text="Novo Atendimento",font=("Arial", 26, "bold"), text_color="white")
         self.titulo.pack(pady=10,padx=10, anchor ='w')
-        ctk.CTkLabel(self,text='Os campos com " * " condiz a campos obrigatorios!',font=("Arial", 11, "bold"), text_color="#C21212").pack(padx=20,  anchor ='w')
+        ctk.CTkLabel(self,text='Os campos com " * " condiz a campos obrigatorios!',font=("Arial", 11, "bold"), text_color="white").pack(padx=20,  anchor ='w')
         
         self.frame_card= ctk.CTkFrame(self,height=200, corner_radius=10, fg_color="#E8E8E8")
         self.frame_card.pack(padx=10, pady=10, fill='both', expand=True)

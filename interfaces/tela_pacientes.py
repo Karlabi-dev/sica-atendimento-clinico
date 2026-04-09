@@ -12,6 +12,7 @@ class PacienteFrame(ctk.CTkFrame):
     def __init__(self, master, app, **kwargs):
         super().__init__(master, fg_color="#0B1F2E", corner_radius=10, **kwargs)
         self.app = app
+        self.pack(fill="both", expand=True)
 
         self.titulo = ctk.CTkLabel(self, text="Pacientes",text_color="white", font=("Arial", 26, "bold"))
         self.titulo.pack(pady=10, padx=10, anchor='w')

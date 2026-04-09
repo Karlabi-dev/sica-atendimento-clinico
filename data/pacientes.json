@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "nome": "João Silva",
+        "nome": "Jo\u00c3\u00a3o Silva",
         "data_nascimento": "10/01/1990",
         "telefone": "85991111111",
         "email": "joao@gmail.com",
@@ -87,6 +87,15 @@
         "telefone": "85998888888",
         "email": "beatriz@gmail.com",
         "doc": "72345678901",
+        "tipo_documento": "CPF"
+    },
+    {
+        "id": 11,
+        "nome": "Jean J\u00fanior \u00e2",
+        "data_nascimento": "09/04/2026",
+        "telefone": "85999999999",
+        "email": "jean@email.com",
+        "doc": "55555555555",
         "tipo_documento": "CPF"
     }
 ]

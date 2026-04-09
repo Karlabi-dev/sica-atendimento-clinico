@@ -277,5 +277,32 @@
         "tipo": "Consulta médica",
         "status": "Agendada",
         "observacoes": ""
+    },
+    {
+        "id": 32,
+        "paciente_id": 1,
+        "data": "09/04/2026",
+        "hora": "13:42",
+        "tipo": "Consulta médica",
+        "status": "Agendada",
+        "observacoes": ""
+    },
+    {
+        "id": 33,
+        "paciente_id": 2,
+        "data": "09/04/2026",
+        "hora": "13:42",
+        "tipo": "Consulta médica",
+        "status": "Agendada",
+        "observacoes": ""
+    },
+    {
+        "id": 34,
+        "paciente_id": 11,
+        "data": "09/04/2026",
+        "hora": "15:58",
+        "tipo": "Exame de imagem",
+        "status": "Faltou",
+        "observacoes": "To com dor"
     }
 ]

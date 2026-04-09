@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import ttk
+import tkinter as tk
 from tkinter import messagebox as mg
 import datetime as dt
 import locale
@@ -18,17 +19,19 @@ from controllers.controller_paciente import PacienteController
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
+logo_sica = "./imagens/logo_sica.png"
 
 class FrameCard(ctk.CTkFrame):
     def __init__(self, master, titulo, **kwargs):
-        super().__init__(master, fg_color="#CBCBCB", corner_radius=10, **kwargs)
+        super().__init__(master, fg_color="#0B1F2E", corner_radius=10, **kwargs)
 
         self.grid_columnconfigure(0, weight=1)
 
         self.titulo = ctk.CTkLabel(
             self,
             text=titulo,
-            font=("Arial", 26, "bold")
+            font=("Arial", 26, "bold"),
+            text_color="white"
         )
         self.titulo.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
@@ -38,6 +41,7 @@ class TelaInicial(ctk.CTk):
         self.geometry('900x600')
         self.title("SICA - Sistema Inteligente de Clínica e Atendimento")
         self.attributes("-fullscreen", True)
+
 
         self.menu_lateral = ctk.CTkFrame(
             self,
@@ -61,15 +65,13 @@ class TelaInicial(ctk.CTk):
                 height=40,
                 anchor="w"
             )
-        ctk.CTkLabel(
-            self.menu_lateral,
-            text="SICA",
-            font=("Arial", 20, 'bold'),
-            text_color='white'
-        ).pack(pady=20)
+        logo = tk.PhotoImage(file=logo_sica, format="png").subsample(4, 4)
+        self.iconphoto(False, logo)
+        ctk.CTkLabel(self.menu_lateral,image=logo, text="", fg_color="transparent").pack(padx=10)
+        ctk.CTkLabel(self.menu_lateral,text="SICA",font=("Arial", 20, 'bold'),text_color='white').pack(pady=(0, 10))
 
         linha = ctk.CTkFrame(self.menu_lateral, height=2, fg_color="#666666")
-        linha.pack(fill="x", padx=5, pady=(0, 10))
+        linha.pack(padx=20, pady=(0, 10))
 
         botao_menu(self.menu_lateral, "Dashboard", self.abrir_dashboard).pack(padx=5, pady=5, fill='x')
         botao_menu(self.menu_lateral, "Pacientes", self.abrir_tela_pacientes).pack(padx=5,pady=5, fill='x')
@@ -111,13 +113,13 @@ class TelaInicial(ctk.CTk):
         self.card = FrameCard(self.frame_scrollbar, "Dashboard")
         self.card.pack(padx=10, pady=10, fill='both', expand=True)
 
-        frame_titulo = ctk.CTkFrame(self.card, fg_color="#CBCBCB")
+        frame_titulo = ctk.CTkFrame(self.card, fg_color="#0B1F2E")
         frame_titulo.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
         
-        label_data = ctk.CTkLabel(frame_titulo, text=self.data(), font=("Arial", 16, 'bold'))
+        label_data = ctk.CTkLabel(frame_titulo, text=self.data(), font=("Arial", 16, 'bold'), text_color="white")
         label_data.grid(row=1, column=0, sticky="w")
         
-        self.label_hora = ctk.CTkLabel(frame_titulo, font=("Arial", 16, 'bold'))
+        self.label_hora = ctk.CTkLabel(frame_titulo, font=("Arial", 16, 'bold'), text_color="white")
         self.label_hora.grid(row=2, column=0, sticky="w")
         self.atualizar_hora()
         
@@ -126,10 +128,18 @@ class TelaInicial(ctk.CTk):
         self.card.grid_rowconfigure(1, weight=1)
 
         frame_paciente = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
-        frame_paciente.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        frame_paciente.grid(row=2, column=0, padx=(150,20), pady=10, sticky="nsew")
         total_pacientes = contar_pacientes()
+        total_atendimento = contar_atendimentos()
+
         ctk.CTkLabel(frame_paciente, text="👤 Total de Pacientes", font=("Arial", 16)).pack(pady=(10, 0))
         ctk.CTkLabel(frame_paciente, text=str(total_pacientes), font=("Arial", 20)).pack(pady=10)
+
+        frame_media = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
+        frame_media.grid(row=3, column=0, padx=(150,20), pady=10, sticky="nsew")
+        ctk.CTkLabel(frame_media, text="👥 Média de Atendimentos por Paciente", font=("Arial", 16)).pack(pady=(10, 0))
+        ctk.CTkLabel(frame_media, text=str(total_atendimento / total_pacientes if total_atendimento > 0 else 0), font=("Arial", 20)).pack(pady=10)
+
 
         frame_atendimento = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
         frame_atendimento.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
@@ -138,7 +148,7 @@ class TelaInicial(ctk.CTk):
         ctk.CTkLabel(frame_atendimento, text=str(total_atendimento), font=("Arial", 20)).pack(pady=10)
 
         frame_hoje = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
-        frame_hoje.grid(row=2, column=2, padx=10, pady=10, sticky="nsew")
+        frame_hoje.grid(row=3, column=1, padx=10, pady=10, sticky="nsew")
         total_atendimento_hoje = contar_atendimentos_hoje()
         ctk.CTkLabel(frame_hoje, text="🏥 Atendimentos Hoje", font=("Arial", 16)).pack(pady=(10, 0))
         ctk.CTkLabel(frame_hoje, text=str(total_atendimento_hoje), font=("Arial", 20)).pack(pady=10)
@@ -152,7 +162,7 @@ class TelaInicial(ctk.CTk):
         ]
 
         frame_tree = ctk.CTkFrame(self.card, fg_color="#FFFFFF", corner_radius=10)
-        frame_tree.grid(row=3, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
+        frame_tree.grid(row=4, column=0, columnspan=3, padx=10, pady=10, sticky="nsew")
         ctk.CTkLabel(frame_tree, text="Atendimentos recentes de hoje").pack(pady=(10, 0))
 
         if atendimentos_hoje:
@@ -161,6 +171,37 @@ class TelaInicial(ctk.CTk):
             for col in colunas:
                 tree.heading(col, text=col.title())
                 tree.column(col, width=120)
+
+            style = ttk.Style()
+
+            style.configure(
+            "Treeview",
+            background="#F7F7F7",
+            foreground="#333333",
+            rowheight=28,
+            fieldbackground="#F7F7F7",
+            borderwidth=0
+            )
+
+            style.map(
+                "Treeview",
+                background=[("selected", "#4A90E2")],
+                foreground=[("selected", "white")]
+            )
+
+            style.configure(
+                "Treeview.Heading",
+                background="#E0E0E0",
+                foreground="#222222",
+                font=("Arial", 12, "bold"),
+                relief="flat"
+            )
+            
+            style.map(
+                "Treeview.Heading",
+                background=[("active", "#D6D6D6")]
+            )
+
             tree.pack(fill="both", expand=True, padx=10, pady=10)
             for a in atendimentos_hoje:
                 paciente_nome = next(
@@ -179,7 +220,6 @@ class TelaInicial(ctk.CTk):
                         a["status"]
                     )
                 )
-                
                 def abrir_paciente(event):
                     item_selecionado = tree.focus() 
                     if item_selecionado:
