@@ -40,7 +40,7 @@ class TelaInicial(ctk.CTk):
         super().__init__()
         self.geometry('900x600')
         self.title("SICA - Sistema Inteligente de Clínica e Atendimento")
-        self.attributes("-fullscreen", True)
+        self.state("zoomed")
 
 
         self.menu_lateral = ctk.CTkFrame(

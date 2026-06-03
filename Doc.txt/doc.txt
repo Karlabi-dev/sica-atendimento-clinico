@@ -1,0 +1,2 @@
+Hoje 03.06.2026 comecei a desenvolver a conexão com o banco de dados, porem terei que modificar o projeto para remover o cadastrado com o cpf do usuario, pois até mesmo nos desenvolvedores não podemos ter acesso nem mesmo a visualização.
+ 
