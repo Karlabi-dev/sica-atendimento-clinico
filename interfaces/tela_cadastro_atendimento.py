@@ -4,7 +4,6 @@ from tkinter import messagebox as mg
 from tkcalendar import DateEntry
 
 from controllers.controller_atendimento import AtendimentoController
-from services.services_parciente import carregar_dados
 
 from core.status_consulta import StatusConsulta
 from core.tipo_atendimento import TipoAtendimento
@@ -28,7 +27,6 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         self.frame_card.grid_columnconfigure(0, weight=1)
         self.frame_card.grid_columnconfigure(1, weight=1)
 
-        self.pacientes = carregar_dados()
         self.pacientes_filtrados = self.pacientes.copy()
     
         self.opcoes_pacientes = [

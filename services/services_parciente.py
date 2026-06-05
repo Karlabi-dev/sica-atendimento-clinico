@@ -1,91 +1,122 @@
-import json
 from validacoes.validar_paciente import ValidadorPaciente
-from models.paciente import Paciente
+from core.conexao import conexao_bd, cursor
 
-caminho_arquivo = "data/pacientes.json"
 
-def gerar_id(caminho_arquivo=caminho_arquivo):
-    dados = carregar_dados(caminho_arquivo)
+def criar_paciente(nome, data_nascimento, telefone, email, doc, tipo_documento):
+    try:
+        dados = {
+            "nome": nome,
+            "data_nascimento": data_nascimento,
+            "telefone": telefone,
+            "email": email,
+            "doc": doc,
+            "tipo_documento": tipo_documento,
+        }
+        ValidadorPaciente.validar_paciente(dados)
 
-    if not dados:
-        return 1
-    return max(p["id"] for p in dados) + 1
+        sql = """
+            INSERT INTO pacientes(nome, data_nascimento, telefone, email, doc, tipo_documento)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(sql, (nome, data_nascimento, telefone, email, doc, tipo_documento))
+        conexao_bd.commit()
+        return cursor.lastrowid
+
+    except Exception as erro:
+        conexao_bd.rollback()
+        print("DEBUG: Erro ao cadastrar:", erro)
+        raise  
+
+def consultar_clientes():
+    try:
+        sql = "SELECT * FROM pacientes ORDER BY id_paciente"
+        cursor.execute(sql)
+        return cursor.fetchall()
+    except Exception as erro:
+        print("DEBUG: Erro ao consultar:", erro)
+        return []
+
 
 def contar_pacientes():
-    dados = carregar_dados("data/pacientes.json")
-    return len(dados)
-
-def salvar_paciente(paciente,caminho_arquivo=caminho_arquivo):
-    dados = carregar_dados(caminho_arquivo)
-    dados.append(paciente.to_dict())
-
-    with open(caminho_arquivo, "w") as f:
-        json.dump(dados, f, indent=4)
-        
-def criar_paciente(dados, caminho_arquivo=caminho_arquivo):
-    ValidadorPaciente.validar_paciente(dados)
-
-    novo_id = gerar_id(caminho_arquivo)
-
-    paciente = Paciente(
-        id=novo_id,
-        nome=dados["nome"],
-        data_nascimento=dados["data_nascimento"],
-        telefone=dados["telefone"],
-        email=dados["email"],
-        doc=dados["doc"],
-        tipo_documento= dados["tipo_documento"]
-    )
-
-    salvar_paciente(paciente, caminho_arquivo)
-
-def carregar_dados(caminho_arquivo=caminho_arquivo):
     try:
-        with open(caminho_arquivo, "r") as f:
-            return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
-    
+        sql = "SELECT COUNT(*) FROM pacientes"
+        cursor.execute(sql)
+        return cursor.fetchone()[0]
+    except Exception as erro:
+        print("Erro ao contar pacientes:", erro)
+        return 0
+
+
 def listar_pacientes():
-    return carregar_dados(caminho_arquivo)
-    
+    try:
+        sql = "SELECT * FROM pacientes"
+        cursor.execute(sql)
+        return cursor.fetchall()
+    except Exception as erro:
+        print("Erro ao listar pacientes:", erro)
+        return []
+
+
 def deletar_paciente(id_paciente):
-    dados = carregar_dados(caminho_arquivo)
+    try:
+        sql_check = "SELECT id_paciente FROM pacientes WHERE id_paciente = %s" 
+        cursor.execute(sql_check, (id_paciente,))
 
-    novos_dados = [p for p in dados if p["id"] != id_paciente]
+        if cursor.fetchone() is None:
+            raise Exception("Paciente não encontrado")
 
-    if len(dados) == len(novos_dados):
-        raise Exception("Paciente não encontrado")
+        sql_delete = "DELETE FROM pacientes WHERE id_paciente = %s"
+        cursor.execute(sql_delete, (id_paciente,))
+        conexao_bd.commit()
+        return True
+    except Exception as erro:
+        conexao_bd.rollback()
+        print("Erro ao deletar paciente:", erro)
+        raise
 
-    with open(caminho_arquivo, "w") as f:
-        json.dump(novos_dados, f, indent=4)
 
 def atualizar_paciente(id_paciente, novos_dados):
-    dados = carregar_dados()
-    for paciente in dados:
-        if paciente["id"] == id_paciente:
-            ValidadorPaciente.validar_paciente(novos_dados)
+    try:
+        sql_check = "SELECT id_paciente FROM pacientes WHERE id_paciente = %s"
+        cursor.execute(sql_check, (id_paciente,))
 
-            paciente["nome"] = novos_dados["nome"]
-            paciente["data_nascimento"] = novos_dados["data_nascimento"]
-            paciente["telefone"] = novos_dados["telefone"]
-            paciente["email"] = novos_dados["email"]
-            paciente["doc"] = novos_dados["doc"]
-            paciente["tipo_documento"] = novos_dados["tipo_documento"]
+        if cursor.fetchone() is None:
+            raise Exception("Paciente não encontrado")
 
-            with open(caminho_arquivo, "w") as f:
-                json.dump(dados, f, indent=4)
-            return
+        ValidadorPaciente.validar_paciente(novos_dados)
 
-    raise Exception("Paciente não encontrado") 
+        sql_update = """
+            UPDATE pacientes
+            SET nome = %s,
+                data_nascimento = %s,
+                telefone = %s,
+                email = %s,
+                doc = %s,
+                tipo_documento = %s
+            WHERE id_paciente = %s
+        """
+        cursor.execute(sql_update, (
+            novos_dados["nome"],
+            novos_dados["data_nascimento"],
+            novos_dados["telefone"],
+            novos_dados["email"],
+            novos_dados["doc"],
+            novos_dados["tipo_documento"],
+            id_paciente,
+        ))
+        conexao_bd.commit()
+        return True
+    except Exception as erro:
+        conexao_bd.rollback()
+        print("Erro ao atualizar paciente:", erro)
+        raise
+
 
 def buscar_paciente_por_id(paciente_id):
-    pacientes = carregar_dados()
-    for p in pacientes:
-        if str(p["id"]) == str(paciente_id):
-            return p
-    return None
-
-
-
-
+    try:
+        sql = "SELECT * FROM pacientes WHERE id_paciente = %s"
+        cursor.execute(sql, (paciente_id,))
+        return cursor.fetchone()
+    except Exception as erro:
+        print("Erro ao buscar paciente:", erro)
+        return None

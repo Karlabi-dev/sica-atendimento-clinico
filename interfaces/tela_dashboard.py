@@ -11,7 +11,7 @@ from interfaces.tela_detalhes_paciente import DetalhePacienteFrame
 from interfaces.tela_atendimentos import AtendimentoFrame
 from interfaces.tela_pacientes import PacienteFrame
 
-from services.services_parciente import contar_pacientes,carregar_dados
+from services.services_parciente import contar_pacientes
 from services.services_atendimento import contar_atendimentos, contar_atendimentos_hoje
 from controllers.controller_atendimento import AtendimentoController
 from controllers.controller_paciente import PacienteController
@@ -138,7 +138,6 @@ class TelaInicial(ctk.CTk):
         frame_media = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
         frame_media.grid(row=3, column=0, padx=(150,20), pady=10, sticky="nsew")
         ctk.CTkLabel(frame_media, text="👥 Média de Atendimentos por Paciente", font=("Arial", 16)).pack(pady=(10, 0))
-        ctk.CTkLabel(frame_media, text=str(total_atendimento / total_pacientes if total_atendimento > 0 else 0), font=("Arial", 20)).pack(pady=10)
 
 
         frame_atendimento = ctk.CTkFrame(self.card, fg_color="#A0B2D4", corner_radius=10)
@@ -154,7 +153,7 @@ class TelaInicial(ctk.CTk):
         ctk.CTkLabel(frame_hoje, text=str(total_atendimento_hoje), font=("Arial", 20)).pack(pady=10)
 
         atendimentos_hoje = AtendimentoController.listar()
-        pacientes = carregar_dados()
+        #Tirei o carregar dados do controller porque ele já é chamado no início do app, então os dados já estão atualizados. Se fosse necessário atualizar, o ideal seria criar um método específico no controller para isso, ao invés de chamar carregar_dados() diretamente aqui.
 
         hoje_str = dt.datetime.now().strftime("%d/%m/%Y")
         atendimentos_hoje = [

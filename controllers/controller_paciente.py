@@ -9,15 +9,14 @@ from services.services_parciente import (
 from exceptions.paciente_exceptions import PacienteErro
 from core.response import Response
 
-
 class PacienteController:
 
     @staticmethod
     def criar(dados):
         try:
-            criar_paciente(dados)
+            criar_paciente(**dados)  
             return Response(True, "Paciente criado com sucesso")
-        except PacienteErro as e:
+        except (PacienteErro, Exception) as e: 
             return Response(False, erro=str(e))
 
     @staticmethod
@@ -45,7 +44,7 @@ class PacienteController:
         try:
             atualizar_paciente(id_paciente, dados)
             return Response(True, "Paciente atualizado com sucesso")
-        except PacienteErro as e:
+        except (PacienteErro, Exception) as e:  
             return Response(False, erro=str(e))
 
     @staticmethod
@@ -53,13 +52,14 @@ class PacienteController:
         try:
             deletar_paciente(id_paciente)
             return Response(True, "Paciente deletado com sucesso")
-        except Exception as e:
+        except (PacienteErro, Exception) as e:
             return Response(False, erro=str(e))
 
     @staticmethod
-    def atualizar_tela(tela_sem_paciente, tela_com_paciente):
-        total = contar_pacientes()
-        if total == 0:
-            tela_sem_paciente()
-        else:
-            tela_com_paciente()
+    def contar() -> int:
+        """ retorna apenas o total — quem chama decide o que fazer com o número.
+        """
+        try:
+            return contar_pacientes()
+        except Exception:
+            return 0

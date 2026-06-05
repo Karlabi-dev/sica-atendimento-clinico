@@ -3,6 +3,7 @@ from tkinter import messagebox as mg
 from controllers.controller_paciente import PacienteController
 from interfaces.tela_pacientes import PacienteFrame
 from tkcalendar import DateEntry
+from datetime import date
 
 
 class CadastroPacienteFrame(ctk.CTkFrame):
@@ -11,10 +12,16 @@ class CadastroPacienteFrame(ctk.CTkFrame):
 
         self.app = app
         self.paciente = paciente
-
-        self.titulo = ctk.CTkLabel(self, text="Novo Paciente", font=("Arial", 26, "bold"), text_color="white")
-        self.titulo.pack(pady=10,padx=10, anchor='w')
-        ctk.CTkLabel(self,text='Os campos com " * " condiz a campos obrigatorios!',font=("Arial", 11, "bold"), text_color="white").pack(padx=20,  anchor ='w')
+        
+        titulo_texto = "Editar Paciente" if self.paciente else "Novo Paciente"
+        self.titulo = ctk.CTkLabel(self, text=titulo_texto, font=("Arial", 26, "bold"), text_color="white")
+        self.titulo.pack(pady=10, padx=10, anchor='w')
+        ctk.CTkLabel(
+            self,
+            text='Os campos com " * " são obrigatórios!',
+            font=("Arial", 11, "bold"),
+            text_color="white"
+        ).pack(padx=20, anchor='w')
 
         self.frame_card = ctk.CTkFrame(self, height=200, corner_radius=10, fg_color="#E8E8E8")
         self.frame_card.pack(padx=10, pady=10, fill='both', expand=True)
@@ -31,7 +38,7 @@ class CadastroPacienteFrame(ctk.CTkFrame):
         self.entry_data = DateEntry(
             self.frame_card,
             date_pattern="dd/mm/yyyy",
-            font=("Arial",16)
+            font=("Arial", 16)
         )
         self.entry_data.grid(row=3, column=0, padx=10, pady=5, sticky="ew")
 
@@ -53,7 +60,7 @@ class CadastroPacienteFrame(ctk.CTkFrame):
         )
         self.tipo_documento.grid(row=7, column=0, padx=10, pady=5, sticky="ew")
 
-        self.entry_doc = ctk.CTkEntry(self.frame_card, placeholder_text="Digite o documento")
+        self.entry_doc = ctk.CTkEntry(self.frame_card, placeholder_text="000.000.000-00")
         self.entry_doc.grid(row=7, column=1, padx=10, pady=10, sticky="ew")
         self.entry_doc.bind("<KeyRelease>", self.aplicar_mascara_doc)
 
@@ -84,67 +91,90 @@ class CadastroPacienteFrame(ctk.CTkFrame):
         self.entry_telefone.delete(0, "end")
         self.entry_telefone.insert(0, texto[:11])
 
-
     def trocar_tipo_doc(self, escolha):
         self.entry_doc.delete(0, "end")
-
         if escolha == "CPF":
             self.entry_doc.configure(placeholder_text="000.000.000-00")
         else:
             self.entry_doc.configure(placeholder_text="Digite o RG")
 
     def aplicar_mascara_doc(self, event):
-        texto = self.entry_doc.get().replace(".", "").replace("-", "")
         tipo = self.tipo_documento.get()
 
         if tipo == "CPF":
-            texto = "".join(filter(str.isdigit, texto))[:11]
+        
+            texto = ''.join(filter(str.isdigit, self.entry_doc.get()))[:11]
 
             novo = ""
-            for i in range(len(texto)):
-                if i in [3, 6]:
+            for i, digito in enumerate(texto):
+                if i in (3, 6):
                     novo += "."
                 elif i == 9:
                     novo += "-"
-                novo += texto[i]
+                novo += digito
 
             self.entry_doc.delete(0, "end")
             self.entry_doc.insert(0, novo)
         else:
             texto = self.entry_doc.get()[:12]
-
             self.entry_doc.delete(0, "end")
             self.entry_doc.insert(0, texto)
-            
+
     def validar_email_input(self, event):
         texto = self.entry_email.get()
-        
         if len(texto) > 254:
             self.entry_email.delete(254, "end")
-                
+
     def validar_nome_input(self, event):
         texto = self.entry_nome.get()
-
-        texto = ''.join(filter(lambda x: x.isalpha() or x.isspace(), texto))
-
-        texto = texto[:100]
-
+        texto = ''.join(filter(lambda x: x.isalpha() or x.isspace(), texto))[:100]
         self.entry_nome.delete(0, "end")
         self.entry_nome.insert(0, texto)
 
     def preencher_dados(self):
+
+        self.entry_nome.delete(0, "end")
         self.entry_nome.insert(0, self.paciente["nome"])
+
         self.entry_data.set_date(self.paciente["data_nascimento"])
+
+        self.entry_telefone.delete(0, "end")
         self.entry_telefone.insert(0, self.paciente["telefone"])
+
+        self.entry_email.delete(0, "end")
         self.entry_email.insert(0, self.paciente["email"])
+
+        self.entry_doc.delete(0, "end")
         self.entry_doc.insert(0, self.paciente["doc"])
+
         self.tipo_documento.set(self.paciente["tipo_documento"])
 
-    def cancelar(self):
+    def _limpar_campos(self):
+        """Centraliza a limpeza de todos os campos do formulário."""
         self.entry_nome.delete(0, "end")
         self.entry_telefone.delete(0, "end")
         self.entry_email.delete(0, "end")
         self.entry_doc.delete(0, "end")
+        self.entry_data.set_date(date.today())  
+
+    def cancelar(self):
+        self._limpar_campos()
+        self.app.trocar_tela(PacienteFrame)  
+
+    def _validar_campos_obrigatorios(self, dados: dict) -> str | None:
+        """
+        FIX 3: valida campos obrigatórios na própria tela antes de chamar o controller.
+        Retorna uma mensagem de erro ou None se tudo estiver ok.
+        """
+        if not dados["nome"].strip():
+            return "O campo Nome Completo é obrigatório."
+        if not dados["telefone"].strip():
+            return "O campo Telefone é obrigatório."
+        if not dados["email"].strip():
+            return "O campo Email é obrigatório."
+        if not dados["doc"].strip():
+            return "O campo Documento é obrigatório."
+        return None
 
     def salvar_paciente(self):
         doc = self.entry_doc.get()
@@ -159,8 +189,13 @@ class CadastroPacienteFrame(ctk.CTkFrame):
             "telefone": self.entry_telefone.get(),
             "email": self.entry_email.get(),
             "doc": doc,
-            "tipo_documento": tipo
+            "tipo_documento": tipo,
         }
+
+        erro_local = self._validar_campos_obrigatorios(dados)
+        if erro_local:
+            mg.showerror("Campos obrigatórios", erro_local)
+            return
 
         try:
             if self.paciente:
