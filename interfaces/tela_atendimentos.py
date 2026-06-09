@@ -146,6 +146,7 @@ class AtendimentoFrame(ctk.CTkFrame):
             self.tree_atendimentos.delete(item)
 
         resposta = AtendimentoController.listar()
+        print('DEBUG:', resposta.dados)
 
         if resposta.sucesso and resposta.dados:
             for a in resposta.dados:
@@ -153,13 +154,13 @@ class AtendimentoFrame(ctk.CTkFrame):
                     "",
                     tk.END,
                     values=(
-                        a["id"],
-                        a["paciente_id"],
-                        a["data"],
-                        a["hora"],
-                        a["tipo"],
-                        a["status"],
-                        a["observacoes"]
+                        a[0],
+                        a[1],
+                        a[2],
+                        a[3],
+                        a[4],
+                        a[5],
+                        a[6]
                     )
                 )
             for i, item in enumerate(self.tree_atendimentos.get_children()):
@@ -175,7 +176,6 @@ class AtendimentoFrame(ctk.CTkFrame):
         self.carregar_lista()
 
     def mostrar_sem_atendimentos(self):
-        self.frame_card.destroy()
 
         ctk.CTkLabel(
             self,

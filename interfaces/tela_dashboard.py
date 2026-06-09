@@ -11,7 +11,7 @@ from interfaces.tela_detalhes_paciente import DetalhePacienteFrame
 from interfaces.tela_atendimentos import AtendimentoFrame
 from interfaces.tela_pacientes import PacienteFrame
 
-from services.services_parciente import contar_pacientes
+from services.services_parciente import contar_pacientes, listar_pacientes
 from services.services_atendimento import contar_atendimentos, contar_atendimentos_hoje
 from controllers.controller_atendimento import AtendimentoController
 from controllers.controller_paciente import PacienteController
@@ -153,6 +153,7 @@ class TelaInicial(ctk.CTk):
         ctk.CTkLabel(frame_hoje, text=str(total_atendimento_hoje), font=("Arial", 20)).pack(pady=10)
 
         atendimentos_hoje = AtendimentoController.listar()
+        listar_pacientes()  # Carrega os pacientes para garantir que os dados estejam atualizados.
         #Tirei o carregar dados do controller porque ele já é chamado no início do app, então os dados já estão atualizados. Se fosse necessário atualizar, o ideal seria criar um método específico no controller para isso, ao invés de chamar carregar_dados() diretamente aqui.
 
         hoje_str = dt.datetime.now().strftime("%d/%m/%Y")

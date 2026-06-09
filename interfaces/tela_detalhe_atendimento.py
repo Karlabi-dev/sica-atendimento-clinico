@@ -47,13 +47,13 @@ class DetalheAtendimentoFrame(ctk.CTkFrame):
 
         card_atendimento = criar_card("Informações do Atendimento")
 
-        linha(card_atendimento, "ID:", atendimento["id"])
-        linha(card_atendimento, "Paciente ID:", atendimento["paciente_id"])
-        linha(card_atendimento, "Data:", atendimento["data"])
-        linha(card_atendimento, "Hora:", atendimento["hora"])
-        linha(card_atendimento, "Tipo:", atendimento["tipo"])
-        linha(card_atendimento, "Status:", atendimento["status"])
-        linha(card_atendimento, "Observações:", atendimento.get("observacoes", ""))
+        linha(card_atendimento, "ID:", atendimento[0])
+        linha(card_atendimento, "Paciente ID:", atendimento[1])
+        linha(card_atendimento, "Data:", atendimento[2])
+        linha(card_atendimento, "Hora:", atendimento[3])
+        linha(card_atendimento, "Tipo:", atendimento[4])
+        linha(card_atendimento, "Status:", atendimento[5])
+        linha(card_atendimento, "Observações:", atendimento.get(6, ""))
 
         from controllers.controller_paciente import PacienteController
 
@@ -65,13 +65,13 @@ class DetalheAtendimentoFrame(ctk.CTkFrame):
         if resposta.sucesso and resposta.dados:
             p = resposta.dados
 
-            linha(card_paciente, "ID:", p['id'])
-            linha(card_paciente, "Nome:", p['nome'])
-            linha(card_paciente, "Nascimento:", p['data_nascimento'])
-            linha(card_paciente, "Telefone:", p['telefone'])
-            linha(card_paciente, "Email:", p['email'])
-            linha(card_paciente, "Documento:", p['doc'])
-            linha(card_paciente, "Tipo:", p['tipo_documento'])
+            linha(card_paciente, "ID:", p[0])
+            linha(card_paciente, "Nome:", p[1])
+            linha(card_paciente, "Nascimento:", p[2])
+            linha(card_paciente, "Telefone:", p[3])
+            linha(card_paciente, "Email:", p[4])
+            linha(card_paciente, "Documento:", p[5])
+            linha(card_paciente, "Tipo:", p[6])
 
         else:
             ctk.CTkLabel(

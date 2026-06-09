@@ -1,4 +1,4 @@
-from core.conexao import conexao_bd, cursor
+from Banco.conexao import conexao_bd, cursor
 
 def cadastrar(nome,data_nascimento, telefone, email, doc, tipo_documento):
 

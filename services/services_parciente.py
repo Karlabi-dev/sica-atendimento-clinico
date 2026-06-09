@@ -1,9 +1,10 @@
 from validacoes.validar_paciente import ValidadorPaciente
-from core.conexao import conexao_bd, cursor
+from Banco.conexao import conexao_bd, cursor
 
 
 def criar_paciente(nome, data_nascimento, telefone, email, doc, tipo_documento):
     try:
+    
         dados = {
             "nome": nome,
             "data_nascimento": data_nascimento,
@@ -27,9 +28,9 @@ def criar_paciente(nome, data_nascimento, telefone, email, doc, tipo_documento):
         print("DEBUG: Erro ao cadastrar:", erro)
         raise  
 
-def consultar_clientes():
+def consultar_pacientes():
     try:
-        sql = "SELECT * FROM pacientes ORDER BY id_paciente"
+        sql = "SELECT * FROM pacientes ORDER BY id"
         cursor.execute(sql)
         return cursor.fetchall()
     except Exception as erro:
@@ -50,23 +51,23 @@ def contar_pacientes():
 def listar_pacientes():
     try:
         sql = "SELECT * FROM pacientes"
-        cursor.execute(sql)
+        cursor.execute( sql)
         return cursor.fetchall()
     except Exception as erro:
         print("Erro ao listar pacientes:", erro)
         return []
 
 
-def deletar_paciente(id_paciente):
+def deletar_paciente(id):
     try:
-        sql_check = "SELECT id_paciente FROM pacientes WHERE id_paciente = %s" 
-        cursor.execute(sql_check, (id_paciente,))
+        sql_check = "SELECT id FROM pacientes WHERE id = %s" 
+        cursor.execute(sql_check, (id,))
 
         if cursor.fetchone() is None:
             raise Exception("Paciente não encontrado")
 
-        sql_delete = "DELETE FROM pacientes WHERE id_paciente = %s"
-        cursor.execute(sql_delete, (id_paciente,))
+        sql_delete = "DELETE FROM pacientes WHERE id = %s"
+        cursor.execute(sql_delete, (id,))
         conexao_bd.commit()
         return True
     except Exception as erro:
@@ -75,10 +76,10 @@ def deletar_paciente(id_paciente):
         raise
 
 
-def atualizar_paciente(id_paciente, novos_dados):
+def atualizar_paciente(id, novos_dados):
     try:
-        sql_check = "SELECT id_paciente FROM pacientes WHERE id_paciente = %s"
-        cursor.execute(sql_check, (id_paciente,))
+        sql_check = "SELECT id FROM pacientes WHERE id = %s"
+        cursor.execute(sql_check, (id,))
 
         if cursor.fetchone() is None:
             raise Exception("Paciente não encontrado")
@@ -93,7 +94,7 @@ def atualizar_paciente(id_paciente, novos_dados):
                 email = %s,
                 doc = %s,
                 tipo_documento = %s
-            WHERE id_paciente = %s
+            WHERE id = %s
         """
         cursor.execute(sql_update, (
             novos_dados["nome"],
@@ -102,7 +103,7 @@ def atualizar_paciente(id_paciente, novos_dados):
             novos_dados["email"],
             novos_dados["doc"],
             novos_dados["tipo_documento"],
-            id_paciente,
+            id,
         ))
         conexao_bd.commit()
         return True
@@ -114,7 +115,7 @@ def atualizar_paciente(id_paciente, novos_dados):
 
 def buscar_paciente_por_id(paciente_id):
     try:
-        sql = "SELECT * FROM pacientes WHERE id_paciente = %s"
+        sql = "SELECT * FROM pacientes WHERE id = %s"
         cursor.execute(sql, (paciente_id,))
         return cursor.fetchone()
     except Exception as erro:

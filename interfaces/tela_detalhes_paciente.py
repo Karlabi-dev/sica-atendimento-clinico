@@ -47,17 +47,17 @@ class DetalhePacienteFrame(ctk.CTkFrame):
 
         card_paciente = criar_card("Informações do Paciente")
 
-        linha(card_paciente, "ID:", paciente["id"])
-        linha(card_paciente, "Nome:", paciente["nome"])
-        linha(card_paciente, "Nascimento:", paciente["data_nascimento"])
-        linha(card_paciente, "Telefone:", paciente["telefone"])
-        linha(card_paciente, "Email:", paciente["email"])
-        linha(card_paciente, "Documento:", paciente["doc"])
-        linha(card_paciente, "Tipo:", paciente["tipo_documento"])
+        linha(card_paciente, "ID:", paciente[0])
+        linha(card_paciente, "Nome:", paciente[1])
+        linha(card_paciente, "Nascimento:", paciente[2])
+        linha(card_paciente, "Telefone:", paciente[3])
+        linha(card_paciente, "Email:", paciente[4])
+        linha(card_paciente, "Documento:", paciente[5])
+        linha(card_paciente, "Tipo:", paciente[6])
 
         card_historico = criar_card("Histórico de Atendimentos")
 
-        resposta = AtendimentoController.listar_por_paciente(paciente["id"])
+        resposta = AtendimentoController.listar_por_paciente(paciente[0])
 
         if resposta.sucesso and resposta.dados:
             for atendimento in resposta.dados:

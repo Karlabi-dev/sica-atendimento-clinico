@@ -63,3 +63,12 @@ class PacienteController:
             return contar_pacientes()
         except Exception:
             return 0
+
+    @staticmethod
+    def atualizar_tela(mostrar_sem_pacientes, mostrar_pacientes):
+        total = PacienteController.contar()
+        
+        if total == 0:
+            mostrar_sem_pacientes()
+        else:
+            mostrar_pacientes()

@@ -1,80 +1,95 @@
-import json
+from Banco.conexao import conexao_bd, cursor
 from datetime import datetime
 
-ARQUIVO = "data/atendimentos.json"
-
 def contar_atendimentos():
-    atendimentos = carregar_atendimento()
-    return len(atendimentos)
+    try:
+        sql = "SELECT COUNT(*) FROM atendimentos"
+        cursor.execute(sql)
+        return cursor.fetchone()[0]
+    except Exception as erro:
+        print("Erro ao contar atendimentos:", erro)
+        return 0  
 
 def contar_atendimentos_hoje():
-    atendimentos = carregar_atendimento()
-    
-    hoje = datetime.now().strftime("%d/%m/%Y")
+    try:
+        hoje = datetime.now().strftime("%d/%m/%Y")
+        sql = "SELECT COUNT(*) FROM atendimentos WHERE data_atendimento = %s"
+        cursor.execute(sql, (hoje,))
+        return cursor.fetchone()[0]
+    except Exception as erro:
+        print("Erro ao contar atendimentos de hoje:", erro)
+        return 0
 
-    return sum(1 for a in atendimentos if a["data"] == hoje)
+def listar_atendimento():
+    try:
+        sql = "SELECT * FROM atendimentos"
+        cursor.execute(sql)
+        return cursor.fetchall()
+    except Exception as erro:
+        print("Erro ao listar atendimentos:", erro)
+        return []
 
-def carregar_atendimento():
-    with open(ARQUIVO, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-def salvar_todos(atendimentos):
-    with open(ARQUIVO, "w", encoding="utf-8") as f:
-        json.dump(atendimentos, f, indent=4, ensure_ascii=False)
 
 def listar_atendimentos_por_data(data_str):
     """
     data_str: 'dd/mm/yyyy'
-    Retorna a lista de atendimentos dessa data.
+    Retorna a lista de
+     atendimentos dessa data.
     """
-    atendimentos = carregar_atendimento()
-    return [a for a in atendimentos if a["data"] == data_str]
+    atendimentos = listar_atendimento()
+    return [a for a in atendimentos if a["data_atendimento"] == data_str]
 
-def gerar_id(atendimentos):
-    if not atendimentos:
-        return 1
+def criar_atendimento(paciente_id, data_atendimento, hora, tipo, status, observarcoes=""):
+    try:
+        dados ={
+            "paciente_id": paciente_id,
+            "data_atendimento": data_atendimento,
+            "hora": hora,
+            "tipo": tipo,
+            "status": status,
+            "observarcoes": observarcoes
+        }
+        sql = """
+                INSERT INTO atendimentos (paciente_id, data_atendimento, hora, tipo, status, observarcoes)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
     
-    return max(a["id"] for a in atendimentos) + 1
-
-def criar_atendimento(dados):
-    atendimentos = carregar_atendimento()
-    
-    novo = {
-        "id": gerar_id(atendimentos),
-        "paciente_id": dados["paciente_id"],
-        "data": dados["data"],
-        "hora": dados["hora"],
-        "tipo": dados["tipo"],
-        "status": dados["status"],
-        "observacoes": dados.get("observacoes", "")
-    }
-
-    atendimentos.append(novo)
-    salvar_todos(atendimentos)
-
-def listar_atendimento():
-    return carregar_atendimento()
+        cursor.execute(sql, (paciente_id, data_atendimento, hora, tipo, status, observarcoes))
+        conexao_bd.commit()
+        return cursor.lastrowid
+    except Exception as erro:
+        conexao_bd.rollback()
+        print("Erro ao criar atendimento:", erro)
+        raise
 
 def deletar_atendimento(id_atendimento):
-    atendimentos = carregar_atendimento()
-    novos = [a for a in atendimentos if a["id"] != id_atendimento]
-
-    salvar_todos(novos)
-
+    try:
+        sql = "DELETE FROM atendimentos WHERE id = %s"
+        cursor.execute(sql, (id_atendimento,))
+        conexao_bd.commit()
+    except Exception as erro:
+        conexao_bd.rollback()
+        print("Erro ao deletar atendimento:", erro)
+        raise
+    
 def atualizar_atendimento(id_atendimento, dados):
-    atendimentos = carregar_atendimento()
-    atualizado = False
-
-    for a in atendimentos:
-        if a["id"] == id_atendimento:
-            # Atualiza apenas os campos presentes em dados
-            for chave in ["paciente_id", "data", "hora", "tipo", "status", "observacoes"]:
-                if chave in dados:
-                    a[chave] = dados[chave]
-            atualizado = True
-            break
-
-    if atualizado:
-        salvar_todos(atendimentos)
-    else:
-        raise ValueError(f"Atendimento com id {id_atendimento} não encontrado.")
+    try:
+        sql = """
+            UPDATE atendimentos
+            SET paciente_id = %s, data_atendimento = %s, hora = %s, tipo = %s, status = %s, observarcoes = %s
+            WHERE id = %s
+        """
+        cursor.execute(sql, (
+            dados.get("paciente_id"),
+            dados.get("data_atendimento"),
+            dados.get("hora"),
+            dados.get("tipo"),
+            dados.get("status"),
+            dados.get("observarcoes"),
+            id_atendimento
+        ))
+        conexao_bd.commit()
+    except Exception as erro:
+        conexao_bd.rollback()
+        print("Erro ao atualizar atendimento:", erro)
+        raise

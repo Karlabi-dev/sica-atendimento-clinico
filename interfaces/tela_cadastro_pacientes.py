@@ -134,20 +134,20 @@ class CadastroPacienteFrame(ctk.CTkFrame):
     def preencher_dados(self):
 
         self.entry_nome.delete(0, "end")
-        self.entry_nome.insert(0, self.paciente["nome"])
+        self.entry_nome.insert(0, self.paciente[1])
 
-        self.entry_data.set_date(self.paciente["data_nascimento"])
+        self.entry_data.set_date(self.paciente[2])
 
         self.entry_telefone.delete(0, "end")
-        self.entry_telefone.insert(0, self.paciente["telefone"])
+        self.entry_telefone.insert(0, self.paciente[3])
 
         self.entry_email.delete(0, "end")
-        self.entry_email.insert(0, self.paciente["email"])
+        self.entry_email.insert(0, self.paciente[4])
 
         self.entry_doc.delete(0, "end")
-        self.entry_doc.insert(0, self.paciente["doc"])
+        self.entry_doc.insert(0, self.paciente[5])
 
-        self.tipo_documento.set(self.paciente["tipo_documento"])
+        self.tipo_documento.set(self.paciente[6])
 
     def _limpar_campos(self):
         """Centraliza a limpeza de todos os campos do formulário."""
@@ -166,7 +166,7 @@ class CadastroPacienteFrame(ctk.CTkFrame):
         FIX 3: valida campos obrigatórios na própria tela antes de chamar o controller.
         Retorna uma mensagem de erro ou None se tudo estiver ok.
         """
-        if not dados["nome"].strip():
+        if not dados[1].strip():
             return "O campo Nome Completo é obrigatório."
         if not dados["telefone"].strip():
             return "O campo Telefone é obrigatório."
@@ -180,8 +180,11 @@ class CadastroPacienteFrame(ctk.CTkFrame):
         doc = self.entry_doc.get()
         tipo = self.tipo_documento.get()
 
+
+
         if tipo == "CPF":
             doc = doc.replace(".", "").replace("-", "")
+
 
         dados = {
             "nome": self.entry_nome.get(),
@@ -192,14 +195,9 @@ class CadastroPacienteFrame(ctk.CTkFrame):
             "tipo_documento": tipo,
         }
 
-        erro_local = self._validar_campos_obrigatorios(dados)
-        if erro_local:
-            mg.showerror("Campos obrigatórios", erro_local)
-            return
-
         try:
             if self.paciente:
-                response = PacienteController.atualizar(self.paciente["id"], dados)
+                response = PacienteController.atualizar(self.paciente[0], dados)
             else:
                 response = PacienteController.criar(dados)
 

@@ -183,17 +183,16 @@ class PacienteFrame(ctk.CTkFrame):
         resposta = PacienteController.listar()
         if resposta.sucesso and resposta.dados:
             for dado in resposta.dados:
-                self.tree_pacientes.insert(
-                    "",
+                self.tree_pacientes.insert("",
                     tk.END,
                     values=(
-                        dado["id"],
-                        dado["nome"],
-                        dado["data_nascimento"],
-                        dado["telefone"],
-                        dado["email"],
-                        dado["doc"],
-                        dado["tipo_documento"]
+                        dado[0],
+                        dado[1],
+                        dado[2],
+                        dado[3],
+                        dado[4],
+                        dado[5],
+                        dado[6]
                     )
                 )
             for i, item in enumerate(self.tree_pacientes.get_children()):

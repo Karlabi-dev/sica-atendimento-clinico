@@ -19,10 +19,8 @@ class AtendimentoController:
         try:
             ValidadorAtendimento.validar_atendimento(dados)
 
-            criar_atendimento(dados)
-
+            criar_atendimento(**dados)
             return Response(True, "Atendimento criado com sucesso")
-
         except AtendimentoErro as e:
             return Response(False, erro=str(e))
 
