@@ -4,6 +4,8 @@ from tkinter import messagebox as mg
 from tkcalendar import DateEntry
 
 from controllers.controller_atendimento import AtendimentoController
+from controllers.controller_paciente import PacienteController 
+from interfaces.tela_pacientes import AtendimentoFrame
 
 from core.status_consulta import StatusConsulta
 from core.tipo_atendimento import TipoAtendimento
@@ -15,7 +17,12 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
 
         self.app = app
         self.atendimento = atendimento
-        self.paciente = paciente
+        self.paciente = paciente 
+        resposta = PacienteController.listar()
+        if resposta.sucesso and resposta.dados:
+            print(f"DEBUG: Pacientes disponíveis para cadastro de atendimento: {self.paciente}")
+            self.paciente = resposta.dados
+        print("DEbug: self.pacientes")
 
         self.titulo = ctk.CTkLabel(self,text="Novo Atendimento",font=("Arial", 26, "bold"), text_color="white")
         self.titulo.pack(pady=10,padx=10, anchor ='w')
@@ -26,12 +33,11 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         
         self.frame_card.grid_columnconfigure(0, weight=1)
         self.frame_card.grid_columnconfigure(1, weight=1)
-
-        self.pacientes_filtrados = self.pacientes.copy()
     
         self.opcoes_pacientes = [
-            f'ID: {p["id"]} - Nome: {p["nome"]} - Documento: {p["doc"]} ' for p in self.pacientes
-        ]
+            f'ID: {p[0]} - Nome: {p[1]} - Documento: {p[5]}'
+            for p in self.paciente if self.paciente is not None
+        ] if self.paciente else []
         ctk.CTkLabel(self.frame_card, text="Buscar paciente").grid(row=0, column=1, padx=10, sticky='w')
 
         self.entry_busca = ctk.CTkEntry(self.frame_card, placeholder_text="Digite o nome...")
@@ -97,15 +103,15 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         busca = self.entry_busca.get().lower()
 
         if not busca:
-            self.pacientes_filtrados = self.pacientes
+            self.pacientes_filtrados = self.paciente
         else:
             self.pacientes_filtrados = [
-                p for p in self.pacientes
-                if busca in p["nome"].lower()
-            ]
+                p for p in self.paciente if self.paciente is not None and busca in p[1].lower()
+            ] if self.paciente else []
+            
 
         novas_opcoes = [
-            f'ID: {p["id"]} - Nome: {p["nome"]} - doc: {p["doc"]}'
+            f'ID: {p[0]} - Nome: {p[1]} - doc: {p[6]}'
             for p in self.pacientes_filtrados
         ]
 
@@ -119,9 +125,9 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         a = self.atendimento
 
         paciente_id = a.get("paciente_id")
-        paciente = next((p for p in self.pacientes if p["id"] == paciente_id), None)
+        paciente = next((p for p in self.pacientes if p[0] == paciente_id), None)
         if paciente:
-            opcao = f'ID: {paciente["id"]} - Nome: {paciente["nome"]} - Documento: {paciente["doc"]}'
+            opcao = f'ID: {paciente[0]} - Nome: {paciente[0]} - Documento: {paciente[6]}'
             self.combo_paciente.set(opcao)
 
         self.entry_data.set_date(a.get("data", ""))
@@ -153,27 +159,29 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
         paciente_id = int(paciente_str.split(" - ")[0].replace("ID:", "").strip())
         dados = {
             "paciente_id": paciente_id,
-            "data": self.entry_data.get(),
+            "data_atendimento": self.entry_data.get(),
             "hora": self.entry_hora.get(),
             "tipo": self.combo_tipo.get(),
             "status": self.combo_status.get(),
-            "observacoes": self.text_obs.get("0.0", "end").strip()
+            "observarcoes": self.text_obs.get("0.0", "end").strip()
         }
 
         if self.atendimento:
-            response = AtendimentoController.atualizar(self.atendimento["id"], dados)
+            response =AtendimentoController.atualizar(self.atendimento[0], dados)
             mg.showinfo(
                 "Sucesso",
                 "Atendimento Atualizado com sucesso!"
             )
             self.limpar()
         else:
-            mg.showinfo(
-                "Sucesso",
-                "Atendimento cadastrado com sucesso!"
-            )
-            self.limpar()
             response = AtendimentoController.criar(dados)
+
+        if response.sucesso:
+                mg.showinfo("Sucesso", response.mensagem)
+                self.app.trocar_tela(AtendimentoFrame)
+        else:
+                mg.showerror("Erro", response.erro)
+            
 
     def limpar(self):
         if self.opcoes_pacientes:
@@ -191,4 +199,3 @@ class CadastroAtendimentoFrame(ctk.CTkFrame):
     def mostrar_msg(self, msg, erro=False):
         cor = "red" if erro else "green"
         self.label_msg.configure(text=msg, text_color=cor)
-
