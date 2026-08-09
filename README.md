@@ -1,147 +1,115 @@
-🏥 SICA - Sistema Inteligente de Clinica e Atendimento.
+<div align="center">
 
-Sistema desktop desenvolvido em Python utilizando Tkinter/CustomTkinter, com o objetivo de gerenciar pacientes e seus atendimentos de forma simples e organizada.
+<img src="imagens/logo_sica.png" alt="Logo do SICA" width="150">
 
----
+# SICA — Sistema Inteligente de Clínica e Atendimento
 
-📌 Funcionalidades
+Aplicação desktop para gerenciamento de pacientes e atendimentos, desenvolvida em Python com uma arquitetura organizada em camadas.
 
-👤 Pacientes
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![CustomTkinter](https://img.shields.io/badge/CustomTkinter-interface-1F6AA5?style=for-the-badge)](https://customtkinter.tomschimansky.com/)
+[![JSON](https://img.shields.io/badge/JSON-persistência-000000?style=for-the-badge&logo=json&logoColor=white)](https://www.json.org/)
 
-- ✅ Cadastrar paciente
-- 📋 Listar pacientes
-- 🔍 Buscar por nome
-- ✏️ Editar paciente
-- ❌ Remover paciente
-- 📄 Visualizar detalhes do paciente
-- 📊 Histórico de atendimentos por paciente
+[Funcionalidades](#-funcionalidades) • [Arquitetura](#-arquitetura) • [Como executar](#-como-executar) • [Roadmap](#-roadmap)
 
-🩺 Atendimentos
+</div>
 
-- ✅ Cadastrar atendimento
-- 📋 Listar atendimentos
-- 🔍 Filtrar por tipo ou status
-- ❌ Remover atendimento
-- 📄 Visualizar detalhes do atendimento
-- 🔗 Vinculação com paciente
+## 💡 Sobre o projeto
 
----
+O SICA foi criado para simplificar o cadastro e o acompanhamento de pacientes e atendimentos clínicos. O projeto prioriza separação de responsabilidades, validação de dados e uma interface desktop acessível.
 
-🧱 Estrutura do Projeto
+Ele representa minha evolução em Python: além da interface gráfica, trabalhei com regras de negócio, controllers, models, tratamento de exceções e persistência local.
 
-SICA/
-│
-├── controllers/
-│   ├── controller_paciente.py
-│   └── controller_atendimento.py
-│
-├── core/
-│   ├── response.py
-│   ├── status_consulta.py
-│   └── tipo_atendimento.py
-│
-├── data/
-│   ├── pacientes.json
-│   └── atendimentos.json
-│
-├── exceptions/
-│   ├── paciente_exceptions.py
-│   └── atendimento_exceptions.py
-│
-├── interfaces/
-│   ├── tela_dashboard.py
-│   ├── tela_pacientes.py
-│   ├── tela_cadastro_pacientes.py
-│   ├── tela_detalhes_paciente.py
-│   ├── tela_atendimentos.py
-│   ├── tela_cadastro_atendimento.py
-│   └── tela_detalhe_atendimento.py
-│
-├── models/
-│   ├── paciente.py
-│   └── atendimento.py
-│
-├── services/
-│   ├── services_parciente.py
-│   └── services_atendimento.py
-│
-├── validacoes/
-│   ├── validar_paciente.py
-│   └── validar_atendimento.py
-│
-├── main.py
-└── README.md
+## ✨ Funcionalidades
 
----
+### Pacientes
 
-⚙️ Tecnologias Utilizadas
+- Cadastrar, listar, buscar e editar pacientes
+- Remover registros
+- Visualizar detalhes e histórico de atendimentos
+- Validar dados antes do armazenamento
 
-- 🐍 Python 3.11+
-- 🖼️ Tkinter
-- 🎨 CustomTkinter
-- 📁 JSON (armazenamento de dados)
+### Atendimentos
 
----
+- Cadastrar e listar atendimentos
+- Filtrar por tipo ou status
+- Vincular um atendimento a um paciente
+- Visualizar detalhes e remover registros
+- Exibir indicadores no dashboard
 
-▶️ Como Executar
+## 🛠 Tecnologias
 
-1. Clone o projeto:
+| Tecnologia | Uso no projeto |
+|---|---|
+| Python | Regras de negócio e organização da aplicação |
+| Tkinter / CustomTkinter | Interface gráfica desktop |
+| TkCalendar | Seleção de datas nos formulários |
+| JSON | Persistência local dos dados |
+| Orientação a Objetos | Models, controllers, validações e exceções |
 
+## 🧱 Arquitetura
+
+~~~mermaid
+flowchart LR
+    UI[Interfaces] --> C[Controllers]
+    C --> V[Validações]
+    C --> S[Services]
+    S --> M[Models]
+    S --> D[(Arquivos JSON)]
+    C --> E[Exceptions]
+~~~
+
+~~~text
+.
+├── interfaces/    # Telas e componentes visuais
+├── controllers/   # Orquestração dos casos de uso
+├── services/      # Regras e persistência
+├── models/        # Entidades do domínio
+├── validacoes/    # Validação dos dados
+├── exceptions/    # Erros específicos do domínio
+├── core/          # Enums e objetos auxiliares
+├── data/          # Dados persistidos em JSON
+└── main.py        # Ponto de entrada
+~~~
+
+## ▶ Como executar
+
+### Pré-requisitos
+
+- Python 3.11 ou superior
+- Tkinter disponível na instalação do Python
+
+~~~bash
 git clone https://github.com/Karlabi-dev/sica-atendimento-clinico.git
+cd sica-atendimento-clinico
+python -m venv .venv
+~~~
 
-- Abra a Pasta do projeto:
+Ative o ambiente virtual e instale as dependências:
 
-cd SICA
-
-2. Execute o sistema:
-
+~~~bash
+pip install customtkinter tkcalendar
 python main.py
+~~~
 
----
+## 🧠 Aprendizados
 
-💾 Armazenamento de Dados
+- construção de interfaces desktop com múltiplas telas;
+- aplicação de arquitetura em camadas;
+- encapsulamento de regras em controllers e services;
+- validação e tratamento de exceções;
+- persistência e relacionamento de dados em JSON.
 
-Os dados são armazenados em arquivos JSON:
+## 🚀 Roadmap
 
-- "data/pacientes.json"
-- "data/atendimentos.json"
+- [ ] Migrar a persistência para PostgreSQL
+- [ ] Criar autenticação e perfis de acesso
+- [ ] Adicionar testes automatizados
+- [ ] Implementar filtros e relatórios avançados
+- [ ] Evoluir o back-end para uma API REST
 
----
+## 👩‍💻 Autora
 
-🧠 Arquitetura
+**Karla Bianca Gonzaga** — desenvolvedora Full Stack em formação, com Python como principal tecnologia e em busca da primeira oportunidade como estagiária ou desenvolvedora júnior.
 
-O sistema segue uma separação em camadas:
-
-- Interfaces (UI) → Telas com Tkinter e Customtkinter
-- Controllers → Intermediação entre UI e lógica
-- Services → Regras de negócio e manipulação de dados
-- Models → Estrutura dos dados
-- Validações → Regras de validação
-- Exceptions → Tratamento de erros
-- Core → Classes auxiliares (Response, enums)
-
----
-
-📌 Observações
-
-- O sistema não utiliza banco de dados, apenas JSON
-- Ideal para estudos de arquitetura MVC adaptada
-- Fácil de expandir para SQLite ou API futuramente
-
----
-
-🚀 Melhorias Futuras
-
-- 🔐 Sistema de login
-- 🗄️ Migração para banco de dados (SQLite/PostgreSQL)
-- 📊 Dashboard com gráficos
-- 🔎 Filtros avançados
-- 📅 Agenda de atendimentos
-
----
-
-👨‍💻 Autora
-
-Karla Bianca Gonzaga
-
----
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Karla%20Bianca-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/karla-bianca-563734355)
